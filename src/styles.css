@@ -1,0 +1,222 @@
+/* ==========================================
+   GLOBAL DESIGN TOKENS & RESPONSIVE THEMES
+   ========================================== */
+
+/* ☀️ Default Theme: Light Mode */
+:root {
+  /* Core Brand Colors */
+  --neon-lime: #a3e635;        /* Primary Accent */
+  --electric-cyan: #06b6d4;    /* Secondary Accent */
+  --stark-white: #ffffff;      /* Main Background */
+  --cool-grey: #a1a1aa;        /* Muted Text / Borders */
+  
+  /* Semantic Status Colors */
+  --success-green: #22c55e;
+  --warning-orange: #f97316;
+  --urgent-magenta: #d946ef;
+
+  /* Light Mode Mapping */
+  --bg-primary: var(--stark-white);
+  --bg-secondary: #f4f4f5;     /* Soft zinc gray for sidebar contrast */
+  --bg-tertiary: #e4e4e7;      /* Clear boundary containers */
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --text-primary: #09090b;     /* High contrast dark text */
+  --text-secondary: #52525b;   /* Mid-tone readable body text */
+  --border-color: rgba(0, 0, 0, 0.05);
+  --shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.04);
+  
+  /* Shared Structural Tokens */
+  --inter-font: 'Inter', system-ui, -apple-system, sans-serif;
+  --weight-500: 500;
+  --weight-700: 700;
+  --letter-spacing: -0.02em;
+  --theme-transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 🌙 Theme Override: Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Core Brand Colors (Dark Adaptations) */
+    --neon-lime: #adff2f;        /* Brighter shade optimized for dark UI contrast */
+    --electric-cyan: #06b6d4;
+    --obsidian-black: #09090b;   /* Main Background */
+    --dark-slate: #18181b;       /* Surface Containers */
+    --muted-zinc: #27272a;       /* Border / Component Backgrounds */
+    --cool-grey: #a1a1aa;        /* Supporting Text */
+
+    /* Dark Mode Mapping */
+    --bg-primary: var(--obsidian-black);
+    --bg-secondary: var(--dark-slate);
+    --bg-tertiary: var(--muted-zinc);
+    --bg-hover: rgba(255, 255, 255, 0.05);
+    --text-primary: var(--stark-white);
+    --text-secondary: var(--cool-grey);
+    --border-color: var(--muted-zinc);
+    --shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ==========================================
+   📦 RESET & APP LAYOUT BASE
+   ========================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  height: 100vh;                  /* Fixed window lock */
+  overflow: hidden;               /* Prevents messy double browser scrolls */
+  font-family: var(--inter-font);
+  font-weight: var(--weight-500);
+  letter-spacing: var(--letter-spacing);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: var(--theme-transition);
+}
+
+/* ==========================================
+   🧭 SIDEBAR NAVIGATION PANEL
+   ========================================== */
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;                 /* Prevents layout from squeezing sidebar */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.5rem 1rem;
+  height: 100%;
+  overflow-y: auto;               /* Allows individual lists to scroll cleanly */
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sidebar);
+  transition: var(--theme-transition);
+}
+
+/* Brand/Logo Area Wrapper */
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  transition: var(--theme-transition);
+}
+
+.brand-logo {
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   🕹️ INTERACTIVE BUTTONS & DYNAMIC LISTS
+   ========================================== */
+.side-btn, .pro-side-btn, .per-side-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: var(--weight-500);
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Standout High-Intent UI Callout: "Add Task" Button Styling */
+#btn-add-task {
+  background-color: var(--electric-cyan);
+  color: var(--stark-white);
+  font-weight: var(--weight-700);
+  margin-bottom: 0.75rem;
+  justify-content: center;       /* Centers the 'Add Task' text inside button block */
+}
+
+#btn-add-task:hover {
+  filter: brightness(1.1);
+  background-color: var(--electric-cyan); /* Overrides generic transparent actions */
+}
+
+/* Hover & Active States for Base Navigation Options */
+.side-btn:hover, 
+.side-btn.active,
+.pro-side-btn:hover,
+.per-side-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Icon Structural Box Alignment */
+.side-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+/* ==========================================
+   📁 PROJECT & PERSONAL FOLDERS
+   ========================================== */
+.pro-sidebar, .per-sidebar {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+  transition: var(--theme-transition);
+}
+
+/* Layout headers settings override */
+.pro-sidebar .pro-side-btn, 
+.per-sidebar .per-side-btn {
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+/* Dynamic UL components targets */
+.projects, .personal {
+  list-style: none;
+  padding-left: 0.5rem;
+  margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Interactive list items outputted by script logic */
+.projects li, .personal li {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--theme-transition);
+}
+
+.projects li:hover, .personal li:hover {
+  background-color: var(--bg-hover);
+  color: var(--neon-lime);        /* Cyberpunk palette style injection */
+}
+
+/* ==========================================
+   🖥️ MAIN WORKSPACE CONTENT CONTAINER
+   ========================================== */
+#content {
+  flex: 1;
+  padding: 2.5rem;
+  overflow-y: auto;               /* Dedicated scroll canvas */
+  background-color: var(--bg-primary);
+  transition: var(--theme-transition);
+}

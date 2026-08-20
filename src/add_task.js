@@ -1,0 +1,176 @@
+let savedTasks = [];
+let activeEditingId = null;
+
+export function initAddTask(existingTask = null) {
+  const add_taskBtn = document.querySelector('#btn-add-task');
+  const contentArea = document.getElementById('content');
+
+  if (!contentArea) return;
+
+  if (add_taskBtn && !add_taskBtn.querySelector('.side-icon')) {
+    const text = add_taskBtn.textContent.trim();
+    add_taskBtn.innerHTML = `
+      <span class="side-icon">➕</span>
+      <span class="side-text">${text}</span>
+    `;
+  }
+
+  const injectFormView = (taskToEdit = null) => {
+    if (taskToEdit) {
+      activeEditingId = taskToEdit.id;
+    } else {
+      activeEditingId = null;
+    }
+
+    const isEditing = !!activeEditingId;
+    const task = taskToEdit || { category: 'projects', name: '', priority: 'medium', note:'', todos: [] };
+
+    document.querySelectorAll('.side-btn, .pro-side-btn, .per-side-btn').forEach(btn => btn.classList.remove('active'));
+    if (add_taskBtn) add_taskBtn.classList.add('active');
+
+    let todosHTML = '';
+    task.todos.forEach(todo => {
+      todosHTML += `
+        <div class="todo-input-group">
+          <input type="text" class="todo-item-input" value="${todo}" required>
+          <button type="button" class="remove-todo-btn">❌</button>
+        </div>`;
+    });
+
+    contentArea.innerHTML = `
+      <div class="view-header">
+        <h1>${isEditing ? '✏️ Edit Task' : 'Add New Task'}</h1>
+      </div>
+      
+      <form id="dynamic-task-form" class="task-form">
+        <label>Category:</label>
+        <select id="task-category" required>
+          <option value="projects" ${task.category === 'projects' ? 'selected' : ''}>Projects</option>
+          <option value="personal" ${task.category === 'personal' ? 'selected' : ''}>Personal</option>
+          <option value="anytime" ${task.category === 'anytime' ? 'selected' : ''}>Anytime</option>
+        </select>
+        
+        <label>Task Name:</label>
+        <input type="text" id="task-name" value="${task.name}" required placeholder="Task title...">
+        
+        <label>Priority:</label>
+        <select id="task-priority">
+          <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
+          <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
+          <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+        </select>
+        
+        <label>Brief Note:</label>
+        <textarea id="task-note" placeholder="Add extra details here...">${task.note}</textarea>
+        
+        <label>To-Dos:</label>
+        <div id="todos-container">
+          ${todosHTML}
+        </div>
+        <button type="button" id="add-todo-field-btn">+ Add To-Do Item</button>
+        
+        <div class="form-actions">
+          <button type="submit" id="save-task-btn">💾 Save Task</button>
+        </div>
+      </form>
+    `;
+
+    setupFormLogic(contentArea);
+  };
+
+  if (add_taskBtn) {
+    add_taskBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('Add Task Clicked inside addEventListener!');
+      injectFormView();
+    });
+  }
+
+  if (existingTask) {
+    injectFormView(existingTask);
+  }
+}
+
+function setupFormLogic(contentArea) {
+  const form = contentArea.querySelector('#dynamic-task-form');
+  const todosContainer = contentArea.querySelector('#todos-container');
+  const addTodoFieldBtn = contentArea.querySelector('#add-todo-field-btn');
+
+  addTodoFieldBtn.addEventListener('click', () => {
+    const div = document.createElement('div');
+    div.className = 'todo-input-group';
+    div.innerHTML = `
+      <input type="text" class="todo-item-input" placeholder="To-do item details" required>
+      <button type="button" class="remove-todo-btn">❌</button>
+    `;
+    todosContainer.appendChild(div);
+  });
+
+  todosContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-todo-btn')) {
+      e.target.parentElement.remove();
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const todoInputs = contentArea.querySelectorAll('.todo-item-input');
+    const todosArray = Array.from(todoInputs).map(input => input.value.trim());
+
+    const taskData = {
+      id: activeEditingId || Date.now().toString(),
+      category: contentArea.querySelector('#task-category').value,
+      name: contentArea.querySelector('#task-name').value.trim(),
+      priority: contentArea.querySelector('#task-priority').value,
+      note: contentArea.querySelector('#task-note').value.trim(),
+      todos: todosArray
+    };
+
+    if (activeEditingId) {
+      const index = savedTasks.findIndex(t => t.id === activeEditingId);
+      if (index !== -1) savedTasks[index] = taskData;
+    } else {
+      savedTasks.push(taskData);
+    }
+
+    aciveEditingId = null;
+    contentArea.innerHTML = `<div class="view-header"><h1>Task Saved!</h1></div>`;
+
+    renderProjectsSidebar();
+  });
+}
+
+function renderProjectsSidebar() {
+  const projectsListUI = document.getElementById('projects');
+  if (!projectsListUI) return;
+
+  projectsListUI.innerHTML = '';
+
+  savedTasks.forEach(task => {
+    const li = document.createElement('li');
+    li.className = `tast-item priority-${task.priority}`;
+
+    const subTodosHTML = task.todos.map(todo => `<li>🔹 ${todo}</li>`).join('');
+
+    li.innerHTML = `
+      <div class="task-summary">
+        <strong>${task.name}</strong> <span class="badge">${task.category}</span>
+        <p class="task-note-preview">${task.note}</p>
+        <ul class="task-sub-list">${subTodosHTML}</ul>
+        <button class="reopen-task-btn" data-id="${task.id}">⚙️ Manage/Add Todos</button>
+      </div>
+    `;
+    projectsListUI.appendChild(li);
+  });
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('reopen-task-btn')) {
+    const taskId = e.target.getAttribute('data-id');
+    const targetedTask = savedTasks.find(t => t.id === taskId);
+    if (targetedTask) {
+      initAddTask(targetedTask);
+    }
+  }
+});
