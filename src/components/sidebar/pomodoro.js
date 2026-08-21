@@ -39,6 +39,12 @@ export function initPomodoroTimer() {
   };
 
   startBtn.addEventListener('click', () => {
+    if (window.Notification && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+      Notification.requestPermission().then(permission => {
+        console.log(`🔔 Notification permissions state: ${permission}`);
+      });
+    }
+
     if (isRunning) {
       // Pause operation execution parameters
       clearInterval(timerInterval);
@@ -67,6 +73,22 @@ export function initPomodoroTimer() {
             osc.start();
             osc.stop(context.currentTime + 0.4);
           } catch (e) {
+            console.log("AudioContext blocked or uninitialized");
+          }
+
+          if (window.Notification && Notification.permission === 'granted') {
+            const title = currentMode === 'focus' ? "Focus Session Wrapped Up! 🎯" : "Break Completed! ⚡";
+            const bodyMessage = currentMode === 'focus' 
+              ? "Excellent work! Take a 5-minute breather to reset your brain." 
+              : "Time to log back in! Your focus sprint is ready.";
+
+            // Trigger the native OS platform pop-up banner component
+            new Notification(title, {
+              body: bodyMessage,
+              icon: "https://flaticon.com" // Optional clean clock logo thumbnail vector
+            });
+          } else {
+            // Safe fallback string modal if notifications are disabled or denied
             alert(currentMode === 'focus' ? "Session wrapped up! Time to grab a coffee." : "Break completed! Back to code loops.");
           }
 
