@@ -1,2 +1,17 @@
-node_modules
-dist
+# Dependency Directories
+node_modules/
+
+# Production Build Directories
+dist/
+build/
+
+# Webpack and System Cache Logs
+.webpack/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+
+# Operating System Files
+.DS_Store
+Thumbs.db
