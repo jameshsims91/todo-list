@@ -7,7 +7,7 @@ import { initUpcoming } from "./upcoming.js";
 import { initAnytime } from "./anytime.js";
 import { initCompleted } from "./completed.js";
 import { initProjects } from "./components/projects/projects.js";
-import { initPersonal } from "./personal.js";
+import { initPersonal } from "./components/personal/personal.js";
 
 console.log("Webpack bundle successfully parsed!");
 

@@ -1,6 +1,6 @@
-/* ========================================== 📁 PROJECTS MODULE PANELS LAYOUT ========================================== */
+/* ========================================== 👤 PERSONAL MODULE PANELS LAYOUT ========================================== */
 
-.projects-layout-grid {
+.personal-layout-grid {
   display: flex;
   gap: 2rem;
   width: 100%;
@@ -8,8 +8,8 @@
   margin-top: 1rem;
 }
 
-/* Explorer Navigation Left Column */
-.projects-master-panel {
+/* Explorer Navigation Left Panel Column */
+.personal-master-panel {
   width: 320px;
   flex-shrink: 0;
   background-color: var(--bg-secondary);
@@ -22,7 +22,7 @@
   transition: var(--theme-transition);
 }
 
-.projects-master-panel h3 {
+.personal-master-panel h3 {
   font-size: 0.85rem;
   font-weight: var(--weight-700);
   text-transform: uppercase;
@@ -30,7 +30,7 @@
   color: var(--text-secondary);
 }
 
-#projects-master-list {
+#personal-master-list {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -41,7 +41,7 @@
 }
 
 /* Master Explorer Navigation Cards */
-.project-list-card {
+.personal-list-card {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   padding: 1.2rem;
@@ -50,45 +50,34 @@
   transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.2s ease;
 }
 
-.project-list-card:hover {
+.personal-list-card:hover {
   border-color: var(--electric-cyan);
   transform: translateX(3px);
 }
 
 /* High Contrast Selected Dashboard Tab Glow */
-.project-list-card.selected {
+.personal-list-card.selected {
   border-color: var(--electric-cyan);
   background-color: var(--bg-tertiary);
   box-shadow: 0 4px 12px rgba(6, 182, 212, 0.08);
 }
 
-.project-card-header {
+.personal-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
 }
 
-.project-card-header strong {
+.personal-card-header strong {
   font-size: 0.95rem;
   font-weight: var(--weight-700);
   color: var(--text-primary);
 }
 
-.todo-count-badge {
-  font-size: 0.75rem;
-  font-weight: var(--weight-700);
-  color: var(--text-secondary);
-  background-color: var(--bg-secondary);
-  padding: 0.25rem 0.6rem;
-  border-radius: 20px;
-  white-space: nowrap;
-  border: 1px solid var(--border-color);
-}
-
 /* ========================================== 🖥️ RIGHT SIDE DETAIL PANELS CONTEXT ========================================== */
 
-.project-detail-panel {
+.personal-detail-panel {
   flex: 1;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -128,15 +117,16 @@
 }
 
 /* Horizontal Metadata Strips */
-.project-meta-strip {
+.personal-meta-strip {
   display: flex;
   gap: 0.75rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
 }
 
-.priority-indicator-pill, 
-.date-indicator-pill {
+/* Metadata pill configurations using core status design paths */
+.personal-meta-strip .priority-indicator-pill, 
+.personal-meta-strip .date-indicator-pill {
   font-size: 0.75rem;
   font-weight: var(--weight-700);
   text-transform: uppercase;
@@ -147,17 +137,16 @@
   background-color: var(--bg-primary);
 }
 
-/* Semantic colors using your token specifications */
-.priority-indicator-pill.priority-high { background-color: rgba(217, 70, 239, 0.12); color: var(--urgent-magenta); border-color: rgba(217, 70, 239, 0.2); }
-.priority-indicator-pill.priority-medium { background-color: rgba(249, 115, 22, 0.12); color: var(--warning-orange); border-color: rgba(249, 115, 22, 0.2); }
-.priority-indicator-pill.priority-low { background-color: rgba(34, 197, 94, 0.12); color: var(--success-green); border-color: rgba(34, 197, 94, 0.2); }
+.personal-meta-strip .priority-indicator-pill.priority-high { background-color: rgba(217, 70, 239, 0.12); color: var(--urgent-magenta); border-color: rgba(217, 70, 239, 0.2); }
+.personal-meta-strip .priority-indicator-pill.priority-medium { background-color: rgba(249, 115, 22, 0.12); color: var(--warning-orange); border-color: rgba(249, 115, 22, 0.2); }
+.personal-meta-strip .priority-indicator-pill.priority-low { background-color: rgba(34, 197, 94, 0.12); color: var(--success-green); border-color: rgba(34, 197, 94, 0.2); }
 
-.date-indicator-pill {
+.personal-meta-strip .date-indicator-pill {
   color: var(--text-secondary);
 }
 
-/* Collapsible Metadata Content Cards */
-.project-notes-box {
+/* Collapsible Metadata Content Note Boxes */
+.personal-notes-box {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   padding: 1.25rem;
@@ -165,7 +154,7 @@
   margin-bottom: 2rem;
 }
 
-.project-notes-box h4 {
+.personal-notes-box h4 {
   font-size: 0.8rem;
   font-weight: var(--weight-700);
   text-transform: uppercase;
@@ -174,7 +163,7 @@
   margin-bottom: 0.5rem;
 }
 
-.project-notes-box p {
+.personal-notes-box p {
   font-size: 0.95rem;
   color: var(--text-primary);
   line-height: 1.5;
@@ -182,14 +171,15 @@
 
 /* ========================================== ☑️ NESTED CHECKLIST TASKS ========================================== */
 
-.project-detail-panel h3 {
+.personal-detail-panel h3 {
   font-size: 1rem;
   font-weight: var(--weight-700);
   color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
-.detail-todo-checklist {
+/* Checklist Engine Designs matching interactive project layout specifications */
+.personal-detail-panel .detail-todo-checklist {
   list-style: none;
   padding: 0;
   margin: 0 0 1.5rem 0;
@@ -198,7 +188,7 @@
   gap: 0.65rem;
 }
 
-.checklist-item-wrapper {
+.personal-detail-panel .checklist-item-wrapper {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -210,99 +200,22 @@
   transition: var(--theme-transition);
 }
 
-.checklist-item-wrapper:hover {
+.personal-detail-panel .checklist-item-wrapper:hover {
   border-color: var(--border-color);
   background-color: var(--bg-hover);
 }
 
-/* Custom Interactive Micro-Checkboxes styling */
-.todo-complete-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--cool-grey);
-  border-radius: 4px;
-  background-color: transparent;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.todo-complete-checkbox:checked {
-  background-color: var(--success-green);
-  border-color: var(--success-green);
-}
-
-.todo-complete-checkbox:checked::after {
-  content: '✓';
-  color: var(--stark-white);
-  font-size: 12px;
-  font-weight: 900;
-  position: absolute;
-}
-
-.checklist-item-wrapper span {
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  transition: color 0.2s ease;
-}
-
 /* ========================================== ➕ INLINE SUB-FORM & PROPERTY FORM CONTROLS ========================================== */
 
-.inline-todo-form {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-
-.inline-todo-form input[type="text"] {
-  flex: 1;
-  padding: 0.85rem 1.2rem;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  border-radius: 10px;
-  outline: none;
-  font-family: inherit;
-  font-size: 0.95rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.inline-todo-form input[type="text"]:focus {
-  border-color: var(--electric-cyan);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
-}
-
-.inline-todo-form button {
-  background-color: var(--electric-cyan);
-  color: var(--stark-white);
-  border: none;
-  padding: 0.85rem 1.5rem;
-  border-radius: 10px;
-  font-weight: var(--weight-700);
-  font-family: inherit;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: filter 0.2s ease;
-}
-
-.inline-todo-form button:hover {
-  filter: brightness(1.1);
-}
-
-/* Full Project Properties Modification Form View Window */
-.property-edit-form {
+/* Metadata Property Editing Fields Panel */
+.personal-detail-panel .property-edit-form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   margin-top: 1.5rem;
 }
 
-.property-edit-form label {
+.personal-detail-panel .property-edit-form label {
   font-size: 0.8rem;
   font-weight: var(--weight-700);
   text-transform: uppercase;
@@ -311,10 +224,11 @@
   margin-bottom: -0.5rem;
 }
 
-.property-edit-form input[type="text"],
-.property-edit-form input[type="date"],
-.property-edit-form select,
-.property-edit-form textarea {
+/* Focused UI Inputs Glow States */
+.personal-detail-panel .property-edit-form input[type="text"],
+.personal-detail-panel .property-edit-form input[type="date"],
+.personal-detail-panel .property-edit-form select,
+.personal-detail-panel .property-edit-form textarea {
   width: 100%;
   padding: 0.85rem 1.2rem;
   border: 1px solid var(--border-color);
@@ -328,74 +242,22 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.property-edit-form input:focus,
-.property-edit-form select:focus,
-.property-edit-form textarea:focus {
+.personal-detail-panel .property-edit-form input:focus,
+.personal-detail-panel .property-edit-form select:focus,
+.personal-detail-panel .property-edit-form textarea:focus {
   border-color: var(--electric-cyan);
   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
 }
 
-.property-edit-form textarea {
+.personal-detail-panel .property-edit-form textarea {
   min-height: 120px;
   resize: vertical;
 }
 
-.edit-mode-actions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--border-color);
-}
+/* ========================================== 🗑️ DESTRACTIVE TASK DELETION ROW PANEL ========================================== */
 
-.save-meta-btn {
-  background-color: var(--neon-lime);
-  color: #09090b; 
-  font-weight: var(--weight-700);
-  border: none;
-  padding: 0.85rem 1.75rem;
-  border-radius: 10px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(163, 230, 53, 0.12);
-  transition: filter 0.2s ease, transform 0.1s ease;
-}
-
-.save-meta-btn:hover { filter: brightness(1.05); }
-.save-meta-btn:active { transform: scale(0.98); }
-
-.cancel-meta-btn {
-  background-color: transparent;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  color: var(--destructive-red);
-  font-weight: var(--weight-500);
-  padding: 0.85rem 1.75rem;
-  border-radius: 10px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: var(--theme-transition);
-}
-
-.cancel-meta-btn:hover {
-  background-color: var(--btn-cancel-hover);
-  border-color: var(--destructive-red);
-}
-
-.cancel-meta-btn:active {
-  transform: scale(0.98);
-}
-
-.empty-state-text {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  font-style: italic;
-  margin: 0.5rem 0;
-}
-
-/* Specialized Destructive Delete Action Styling */
-.delete-project-btn {
+/* Destructive Delete Button mapped to theme urgent status values */
+.delete-personal-btn {
   background-color: transparent;
   border: 1px solid rgba(217, 70, 239, 0.2); 
   color: var(--urgent-magenta); 
@@ -405,15 +267,15 @@
   padding: 0.85rem 1.5rem;
   border-radius: 10px;
   cursor: pointer;
-  margin-left: auto;
+  margin-left: auto; 
   transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
-.delete-project-btn:hover {
+.delete-personal-btn:hover {
   background-color: rgba(217, 70, 239, 0.08); 
   border-color: var(--urgent-magenta);
 }
 
-.delete-project-btn:active {
+.delete-personal-btn:active {
   transform: scale(0.98);
 }

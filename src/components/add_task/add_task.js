@@ -81,6 +81,7 @@ export function initAddTask(existingTask = null) {
         
         <div class="form-actions">
           <button type="submit" id="save-task-btn">💾 Save Task</button>
+          <button type="button" id="cancel-task-btn" class="cancel-meta-btn">Cancel</button>
         </div>
       </form>
     `;
@@ -106,6 +107,8 @@ function setupFormLogic(contentArea) {
   const todosContainer = contentArea.querySelector('#todos-container');
   const addTodoFieldBtn = contentArea.querySelector('#add-todo-field-btn');
 
+  const cancelBtn = contentArea.querySelector('#cancel-task-btn');
+
   addTodoFieldBtn.addEventListener('click', () => {
     const div = document.createElement('div');
     div.className = 'todo-input-group';
@@ -121,6 +124,16 @@ function setupFormLogic(contentArea) {
       e.target.parentElement.remove();
     }
   });
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      activeEditingId = null;
+
+      contentArea.innerHTML = '';
+
+      document.querySelectorAll('.side-btn, .pro-side-btn, .per-side-btn').forEach(btn => btn.classList.remove('active'));
+    });
+  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -156,29 +169,28 @@ function setupFormLogic(contentArea) {
 
 export function renderProjectsSidebar() {
   const projectsListUI = document.getElementById('projects');
-  if (!projectsListUI) return;
+  const personalListUI = document.getElementById('personal');
 
-  projectsListUI.innerHTML = '';
+  const savedTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
 
-  savedTasks.forEach(task => {
-    const li = document.createElement('li');
-    li.className = `task-item reopen-task-btn priority-${task.priority}`;
-    li.setAttribute('data-id', task.id);
-
-    let displayDate = '';
-    if (task.date) {
-      displayDate = format(parseISO(task.date), 'MMM d, yyyy');
-    }
-
-    li.innerHTML = `
-      <div class="sidebar-task-wrapper">
+  const projectTasks = savedTasks.filter(t => t.category === 'projects');
+  const personalTasks = savedTasks.filter(t => t.category === 'personal');
+  
+  if (projectsListUI) {
+    projectsListUI.innerHTML = projectTasks.map(task => `
+      <li class="task-item reopen-task-btn priority-${task.priority}" data-id="${task.id}">
         <strong>${task.name}</strong>
-        ${displayDate ? `<span class="task-date-badge">📅 ${displayDate}</span>` : ''}
-      </div>
-    `;
-    
-    projectsListUI.appendChild(li);
-  });
+      </li>
+    `).join('');
+  }
+
+  if (personalListUI) {
+    personalListUI.innerHTML = personalTasks.map(task => `
+      <li class="task-item reopen-task-btn priority-${task.priority}" data-id="${task.id}">
+        <strong>${task.name}</strong>
+      </li>
+    `).join('');
+  }
 }
 
 document.addEventListener('click', (e) => {

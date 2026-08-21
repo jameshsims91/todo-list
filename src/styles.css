@@ -14,6 +14,9 @@
   --success-green: #22c55e;
   --warning-orange: #f97316;
   --urgent-magenta: #d946ef;
+  --destructive-red: #ef4444;
+  --btn-cancel-hover: rgba(239, 68, 68, 0.08);
+
 
   /* Light Mode Mapping */
   --bg-primary: var(--stark-white);
@@ -53,6 +56,11 @@
     --text-secondary: var(--cool-grey);
     --border-color: var(--muted-zinc);
     --shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.4);
+
+    --destructive-red: #ff453a;
+
+    --btn-cancel-hover: rgba(255, 69, 58, 0.12);
+    
   }
 }
 
