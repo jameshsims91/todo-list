@@ -4,27 +4,19 @@ import { format, parseISO } from 'date-fns';
 let activeProjectId = null;
 
 export function initProjects() {
-  const contentArea = document.getElementById('content');
-  const projectsBtn = document.querySelector('#btn-projects');
+  console.log("🔍 initProjects() event delegate listener registered!");
 
-  if (!contentArea) return;
-
-  if (projectsBtn && !projectsBtn.querySelector('.side-icon')) {
-    const text = projectsBtn.textContent.trim();
-    projectsBtn.innerHTML = `
-      <span class="side-icon">📁</span>
-      <span class="side-text">${text}</span>
-    `;
-  }
-
-  const renderDashboardView = () => {
+  const renderDashboardView = (contentArea, projectsBtn) => {
+    console.log("🚀 renderDashboardView() engine firing into #content canvas!");
     const savedTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
     const projects = savedTasks.filter(task => task.category === 'projects');
 
+    // Manage active states globally across all navigation components
     document.querySelectorAll('.side-btn, .pro-side-btn, .per-side-btn').forEach(btn => btn.classList.remove('active'));
     if (projectsBtn) projectsBtn.classList.add('active');
 
-    contentArea.innherHTML = `
+    // Inject Split-Pane Layout Blueprint into <div id="content">
+    contentArea.innerHTML = `
       <div class="view-header">
         <h1>📁 Projects Dashboard</h1>
       </div>
@@ -41,10 +33,10 @@ export function initProjects() {
                 </div>
               </li>
             `).join('')}
-            ${projects.length === 0 ? '<p class="empty-state-text">No active project task found. Click "Add Task" to get started.</p>' : ''}
+            ${projects.length === 0 ? '<p class="empty-state-text">No active project tasks found. Click "Add Task" to get started.</p>' : ''}
           </ul>
         </div>
-        
+
         <!-- Right Column: Context Detail Panel Canvas -->
         <div id="project-detail-panel" class="project-detail-panel">
           <div class="panel-placeholder">
@@ -54,6 +46,7 @@ export function initProjects() {
       </div>
     `;
 
+    // Hook click target monitoring on explorer row cards
     const masterList = document.getElementById('projects-master-list');
     if (masterList) {
       masterList.addEventListener('click', (e) => {
@@ -64,32 +57,51 @@ export function initProjects() {
         card.classList.add('selected');
 
         const projectId = card.getAttribute('data-project-id');
-        activeProjectId = projectId;
-
+        activeProjectId = projectId; 
+        
         const targetedProject = projects.find(p => p.id === projectId);
         if (targetedProject) {
-          renderProjectDetails(targetedProject, savedTasks, renderDashboardView);
+          renderProjectDetails(targetedProject, savedTasks, () => renderDashboardView(contentArea, projectsBtn));
         }
       });
     }
 
+    // Force-load detail pane state if an item was previously active
     if (activeProjectId) {
       const activeProject = projects.find(p => p.id === activeProjectId);
       if (activeProject) {
-        renderProjectDetails(activeProject, savedTasks, renderDashboardView);
+        renderProjectDetails(activeProject, savedTasks, () => renderDashboardView(contentArea, projectsBtn));
       } else {
-        activeProjectId = null;
+        activeProjectId = null; 
       }
     }
   };
 
-  if (projectsBtn) {
-    projectsBtn.addEventListener('click', () => {
-      console.log('Projects Dashboard rendered!');
-      activeProjectId = null;
-      renderDashboardView();
-    });
-  }
+  // 🎯 EVENT DELEGATION: Listen to clicks on the whole page to find the button at execution time!
+  document.addEventListener('click', (e) => {
+    const projectsBtn = e.target.closest('#btn-projects');
+    if (!projectsBtn) return; // Exit if what was clicked wasn't the projects button
+
+    console.log("🎯 Projects sidebar button found and intercepted at runtime!");
+    const contentArea = document.getElementById('content');
+
+    if (!contentArea) {
+      console.error("❌ CRITICAL ERROR: Could not find <div id='content'> in your HTML structure!");
+      return;
+    }
+
+    // Format the sidebar button icon natively if needed
+    if (!projectsBtn.querySelector('.side-icon')) {
+      const text = projectsBtn.textContent.trim();
+      projectsBtn.innerHTML = `
+        <span class="side-icon">📁</span>
+        <span class="side-text">${text}</span>
+      `;
+    }
+
+    activeProjectId = null; 
+    renderDashboardView(contentArea, projectsBtn); 
+  });
 }
 
 function renderProjectDetails(project, allTasks, refreshParentDashboard) {
@@ -157,6 +169,8 @@ function renderProjectDetails(project, allTasks, refreshParentDashboard) {
       <div class="edit-mode-actions">
         <button type="submit" class="save-meta-btn">💾 Apply Changes</button>
         <button type="button" id="cancel-p-edit-btn" class="cancel-meta-btn">Cancel</button>
+
+        <button type="button" id="delete-project-btn" class="delete-project-btn">🗑️ Delete Project</button>
       </div>
     </form>
   </div>
@@ -171,10 +185,30 @@ function setupDetailPanelListeners(project, allTasks, refreshParentDashboard) {
   
   const editMetaBtn = document.getElementById('edit-project-meta-btn');
   const cancelEditBtn = document.getElementById('cancel-p-edit-btn');
+
+  const deleteProjectBtn = document.getElementById('delete-project-btn');
   
   const metaEditForm = document.getElementById('project-property-edit-form');
   const inlineTodoForm = document.getElementById('inline-add-todo-form');
   const checklist = document.querySelector('.detail-todo-checklist');
+
+  if (deleteProjectBtn) {
+    deleteProjectBtn.addEventListener('click', () => {
+      if (confirm(`Are you sure you want to permanently delete "${project.name}"`)) {
+        const mainIndex = allTasks.findIndex(t => t.id === project.id);
+        if (mainIndex !== -1) {
+          allTasks.splice(mainIndex, 1);
+        }
+
+        localStorage.setItem('app_tasks', JSON.stringify(allTasks));
+
+        const projectsBtn = document.querySelector('#btn-projects');
+        if (projectsBtn) {
+          projectsBtn.click();
+        }
+      }
+    });
+  }
 
   if (editMetaBtn) {
     editMetaBtn.addEventListener('click', () => {
