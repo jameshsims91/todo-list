@@ -1,0 +1,125 @@
+/* ========================================== ☀️ TODAY VIEW AGENDA MODULE ========================================== */
+
+.today-container-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.current-date-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.today-feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.today-count-pill {
+  font-size: 0.75rem;
+  font-weight: var(--weight-700);
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+}
+
+.today-cards-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.today-task-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--cool-grey);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.today-task-card.priority-high { border-left-color: var(--urgent-magenta); }
+.today-task-card.priority-medium { border-left-color: var(--warning-orange); }
+.today-task-card.priority-low { border-left-color: var(--success-green); }
+
+.today-card-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.today-card-details h4 {
+  font-size: 1.1rem;
+  font-weight: var(--weight-700);
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing);
+}
+
+.today-task-note {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+  line-height: 1.4;
+}
+
+.category-tag-pill {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+.today-sub-checklist-box {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-left: 2.25rem;
+}
+
+.today-sub-checklist-box h5 {
+  font-size: 0.8rem;
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.today-sub-checklist-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.today-empty-card {
+  text-align: center;
+  padding: 4rem 2rem;
+  border: 1px dashed var(--border-color);
+  border-radius: 14px;
+}
+
+.empty-today-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; }

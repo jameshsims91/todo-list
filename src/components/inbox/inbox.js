@@ -1,4 +1,6 @@
 import './inbox.css';
+// Import your fresh unified layout helper utilities 🎯
+import { generateCountdownBannerHTML, generatePriorityPillHTML } from '../../utils/tasks_helpers.js';
 
 export function initInbox() {
   console.log("🔍 initInbox() event listener registered!");
@@ -17,17 +19,16 @@ export function initInbox() {
   }
 
   const renderInboxView = () => {
-
     const savedTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
-
+    
     const activeAlerts = [];
     savedTasks.forEach(task => {
       if (task.notifications && task.notifications.length > 0) {
         task.notifications.forEach(message => {
           activeAlerts.push({
-            taskId: task.id,
-            taskName: task.name,
-            dueDate: task.date,
+            id: task.id,
+            name: task.name,
+            date: task.date,
             priority: task.priority,
             alertMessage: message
           });
@@ -51,16 +52,19 @@ export function initInbox() {
 
         <div id="inbox-cards-feed" class="inbox-cards-feed">
           ${activeAlerts.map(alert => `
-            <div class="inbox-card-component priority-${alert.priority}" data-task-id="${alert.taskId}" data-alert-text="${alert.alertMessage}">
+            <div class="inbox-card-component priority-${alert.priority}" data-task-id="${alert.id}" data-alert-text="${alert.alertMessage}">
               <div class="inbox-card-glow-edge"></div>
               
               <div class="inbox-card-main-content">
-                <div class="inbox-card-meta-row">
-                  <span class="inbox-meta-tag category-urgency">⚠️ OVERDUE CRITICAL</span>
-                  <span class="inbox-meta-time">Due Date: ${alert.dueDate || 'N/A'}</span>
+                <!-- 🎯 Integrated Countdown Banner & Priority Pill Layout Helpers -->
+                ${generateCountdownBannerHTML(alert.date)}
+                
+                <div class="inbox-card-meta-row" style="margin-top: 0.5rem;">
+                  ${generatePriorityPillHTML(alert.priority)}
+                  <span class="inbox-meta-time">Due: ${alert.date || 'N/A'}</span>
                 </div>
                 
-                <h4 class="inbox-card-title">${alert.taskName}</h4>
+                <h4 class="inbox-card-title" style="margin-top: 0.5rem;">${alert.name}</h4>
                 <p class="inbox-card-desc">${alert.alertMessage}</p>
               </div>
 
@@ -84,7 +88,6 @@ export function initInbox() {
 
   if (inboxBtn) {
     inboxBtn.addEventListener('click', () => {
-      console.log("🎯 Inbox component viewed!");
       renderInboxView();
     });
   }
@@ -102,18 +105,15 @@ export function initInbox() {
     card.style.transition = 'all 0.25s ease';
 
     setTimeout(() => {
-
       const currentTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
       const updatedTasks = currentTasks.map(task => {
         if (task.id === targetTaskId && task.notifications) {
-
           task.notifications = task.notifications.filter(msg => msg !== targetAlertText);
         }
         return task;
       });
 
       localStorage.setItem('app_tasks', JSON.stringify(updatedTasks));
-      
       renderInboxView();
     }, 250);
   });

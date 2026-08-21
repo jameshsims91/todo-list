@@ -139,7 +139,10 @@ function setupFormLogic(contentArea) {
     e.preventDefault();
 
     const todoInputs = contentArea.querySelectorAll('.todo-item-input');
-    const todosArray = Array.from(todoInputs).map(input => input.value.trim());
+    const todosArray = Array.from(todoInputs).map(input => ({
+      text: input.value.trim(),
+      completed: false
+    }));
 
     const taskData = {
       id: activeEditingId || Date.now().toString(),
@@ -202,4 +205,8 @@ document.addEventListener('click', (e) => {
       initAddTask(targetedTask);
     }
   }
+});
+
+document.addEventListener('syncSidebar', () => {
+  renderProjectsSidebar();
 });

@@ -1,0 +1,79 @@
+/* ========================================== 🎨 MODERN SEGMENTED THEME CONTROLS ========================================== */
+
+.sidebar-footer {
+  margin-top: auto; 
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  transition: var(--theme-transition);
+}
+
+.theme-toggle-component {
+  width: 100%;
+  background-color: var(--bg-tertiary); 
+  padding: 0.25rem;
+  border-radius: 12px;
+  box-sizing: border-box;
+  transition: var(--theme-transition);
+}
+
+.theme-track {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.theme-slider-thumb {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background-color: var(--bg-primary);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease;
+  z-index: 1;
+}
+
+:root.dark-mode .theme-slider-thumb {
+  transform: translateX(100%);
+  background-color: var(--bg-secondary);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.theme-option-btn {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: var(--weight-700);
+  color: var(--text-secondary);
+  cursor: pointer;
+  z-index: 2; 
+  transition: color 0.2s ease;
+}
+
+.theme-option-btn.active {
+  color: var(--text-primary);
+}
+
+#theme-light.theme-option-btn.active {
+  color: var(--electric-cyan); 
+}
+
+#theme-dark.theme-option-btn.active {
+  color: var(--neon-lime);
+}
+
+.theme-btn-icon {
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+}

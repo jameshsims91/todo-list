@@ -1,5 +1,9 @@
 import './personal.css';
 import { format, parseISO } from 'date-fns';
+import { sortTasksByDueDate } from '../../utils/task_sorter.js';
+import { generateCountdownBannerHTML, generatePriorityPillHTML, generateProgressBarHTML } from '../../utils/tasks_helpers.js';
+import { toggleCalendarDropdown } from '../../utils/calendar_dropdown.js';
+import { attachSwipeGestures } from '../../utils/touch_gestures.js';
 
 let activePersonalId = null;
 
@@ -9,15 +13,12 @@ export function initPersonal() {
   const renderPersonalDashboard = (contentArea, personalBtn) => {
     console.log("🚀 renderPersonalDashboard() engine firing into #content canvas!");
     const savedTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
-    
-    // 🎯 Filter records tracking exclusively under the 'personal' classification
-    const personalTasks = savedTasks.filter(task => task.category === 'personal');
+    const personalTasksRaw = savedTasks.filter(task => task.category === 'personal');
+    const personalTasks = sortTasksByDueDate(personalTasksRaw);
 
-    // Manage active state highlights across all navigation components
     document.querySelectorAll('.side-btn, .pro-side-btn, .per-side-btn').forEach(btn => btn.classList.remove('active'));
     if (personalBtn) personalBtn.classList.add('active');
 
-    // Inject Split-Pane Layout Blueprint into <div id="content">
     contentArea.innerHTML = `
       <div class="view-header">
         <h1>👤 Personal Dashboard</h1>
@@ -29,6 +30,8 @@ export function initPersonal() {
           <ul id="personal-master-list">
             ${personalTasks.map(task => `
               <li class="personal-list-card ${activePersonalId === task.id ? 'selected' : ''}" data-personal-id="${task.id}">
+                <div class="priority-dot-indicator status-${personal.priority}"></div>
+                
                 <div class="personal-card-header">
                   <strong>${task.name}</strong>
                   <span class="todo-count-badge">📝 ${task.todos ? task.todos.length : 0} items</span>
@@ -65,6 +68,34 @@ export function initPersonal() {
           renderPersonalDetails(targetedTask, savedTasks, () => renderPersonalDashboard(contentArea, personalBtn));
         }
       });
+      attachSwipeGestures(
+        masterList,
+        (swipeDuplicatedId) => {
+          // 👉 CALLBACK: Handle Fast Swipe-Right Duplication Loop
+          const targetTask = anytimeTasks.find(t => t.id === swipeDuplicatedId);
+          if (targetTask) {
+            const copy = {
+              ...targetTask,
+              id: Date.now().toString(),
+              name: `${targetTask.name} (Copy)`,
+              todos: targetTask.todos ? targetTask.todos.map(t => ({ ...t, completed: false })) : []
+            };
+            savedTasks.push(copy);
+            localStorage.setItem('app_tasks', JSON.stringify(savedTasks));
+            renderDashboardView(); // Instant layout repaint!
+          }
+        },
+        (swipeDeletedId) => {
+          // 👈 CALLBACK: Handle Fast Swipe-Left Destructive Deletion Loop
+          const targetTask = anytimeTasks.find(t => t.id === swipeDeletedId);
+          if (targetTask && confirm(`Permanently delete "${targetTask.name}"?`)) {
+            const freshArray = savedTasks.filter(t => t.id !== swipeDeletedId);
+            localStorage.setItem('app_tasks', JSON.stringify(freshArray));
+            activeAnytimeId = null; // Clear view references
+            renderDashboardView(); // Instant layout repaint!
+          }
+        }
+      );
     }
 
     if (activePersonalId) {
@@ -77,7 +108,6 @@ export function initPersonal() {
     }
   };
 
-  // 🎯 EVENT DELEGATION: Intercepts click elements matching your template button
   document.addEventListener('click', (e) => {
     const personalBtn = e.target.closest('#btn-personal');
     if (!personalBtn) return;
@@ -90,7 +120,6 @@ export function initPersonal() {
       return;
     }
 
-    // Format the sidebar button icon natively if needed
     if (!personalBtn.querySelector('.side-icon')) {
       const text = personalBtn.textContent.trim();
       personalBtn.innerHTML = `
@@ -104,7 +133,6 @@ export function initPersonal() {
   });
 }
 
-// Detail Panel Window Sub-Renderer
 function renderPersonalDetails(task, allTasks, refreshParentDashboard) {
   const detailPanel = document.getElementById('personal-detail-panel');
   if (!detailPanel) return;
@@ -113,26 +141,36 @@ function renderPersonalDetails(task, allTasks, refreshParentDashboard) {
 
   detailPanel.innerHTML = `
     <div id="personal-view-mode">
-      <div class="detail-header-row">
+      ${generateCountdownBannerHTML(task.date)}
+
+      <div class="detail-header-row" style="margin-top: 1rem;">
         <h2>${task.name}</h2>
-        <button id="edit-personal-meta-btn" class="edit-task-btn">✏️ Edit Details</button>
+        <div class="detail-header-actions-cluster">
+          ${task.todos && task.todos.some(t => t.completed) ? `<button type="button" id="clear-finished-subtodos-btn" class="clear-finished-btn" title="Purge resolved sub-todos">🧹 Clear Checked</button>
+          ` : ''}
+          <button type="button" id="duplicate-personal-btn" class="duplicate-task-btn" title="Duplicate task pattern">👥 Duplicate</button>
+          <button id="edit-personal-meta-btn" class="edit-task-btn">✏️ Edit Details</button>
+        </div>
       </div>
       
       <div class="personal-meta-strip">
-        <span class="priority-indicator-pill priority-${task.priority}">Priority: ${task.priority}</span>
+        ${generatePriorityPillHTML(task.priority)}
         <span class="date-indicator-pill">📅 Due: ${displayDate}</span>
       </div>
 
-      ${task.note ? `<div class="personal-notes-box"><h4>Notes:</h4><p>${task.note}</p></div>` : ''}
+      ${generateProgressBarHTML(task.todos)}
 
-      <h3>Personal Checklist Items</h3>
-      <ul class="detail-todo-checklist">
+      ${task.note ? `<div class="personal-notes-box" style="margin-top: 1.25rem;"><h4>Notes:</h4><p>${task.note}</p></div>` : ''}
+
+      <h3 style="margin-top: 1.5rem;">Personal Checklist Items</h3>
+      <ul class="detail-todo-checklist" id="draggable-todo-list">
         ${task.todos && task.todos.length > 0 
           ? task.todos.map((todo, idx) => `
-              <li>
-                <label class="checklist-item-wrapper">
-                  <input type="checkbox" class="todo-complete-checkbox" data-todo-index="${idx}">
-                  <span>${todo}</span>
+              <li class="todo-draggable-row" draggable="true" data-index="${idx}">
+                <label class="checklist-item-wrapper ${todo.completed ? 'checked-item' : ''}">
+                  <span class="drag-grip-handle">☰</span>
+                  <input type="checkbox" class="todo-complete-checkbox" data-todo-index="${idx}" ${todo.completed ? 'checked' : ''}>
+                  <span>${todo.text || todo}</span>
                 </label>
               </li>
             `).join('')
@@ -160,7 +198,11 @@ function renderPersonalDetails(task, allTasks, refreshParentDashboard) {
         </select>
 
         <label>Due Date:</label>
-        <input type="date" id="edit-p-date" value="${task.date || ''}">
+        <div class="custom-cal-trigger-wrapper">
+          <button type="button" id="edit-p-date-trigger" class="custom-date-trigger-btn" data-raw-date="${task.date || ''}">
+            📅 ${task.date ? format(parseISO(task.date), 'MMMM d, yyyy') : 'Set a target deadline...'}
+          </button>
+        </div>
 
         <label>Notes:</label>
         <textarea id="edit-p-note">${task.note || ''}</textarea>
@@ -168,7 +210,6 @@ function renderPersonalDetails(task, allTasks, refreshParentDashboard) {
         <div class="edit-mode-actions">
           <button type="submit" class="save-meta-btn">💾 Apply Changes</button>
           <button type="button" id="cancel-p-edit-btn" class="cancel-meta-btn">Cancel</button>
-          
           <!-- Destructive Delete Button 🗑️ -->
           <button type="button" id="delete-personal-btn" class="delete-personal-btn">🗑️ Delete Task</button>
         </div>
@@ -188,8 +229,47 @@ function setupDetailPanelListeners(task, allTasks, refreshParentDashboard) {
   const deletePersonalBtn = document.getElementById('delete-personal-btn'); 
   
   const metaEditForm = document.getElementById('personal-property-edit-form');
+  const duplicateBtn = document.getElementById('duplicate-personal-btn');
   const inlineTodoForm = document.getElementById('inline-add-todo-form');
   const checklist = document.querySelector('.detail-todo-checklist');
+  const draggableList = document.getElementById('draggable-todo-list');
+  const clearFinishedBtn = document.getElementById('clear-finished-subtodos-btn');
+  const dateTriggerBtn = document.getElementById('edit-p-date-trigger');
+
+  if (dateTriggerBtn) {
+    dateTriggerBtn.addEventListener('click', () => {
+      const currentSavedDate = dateTriggerBtn.getAttribute('data-raw-date');
+      
+      // Launch the core engine slider component panel 🎯
+      toggleCalendarDropdown(dateTriggerBtn, currentSavedDate, (newSelectedDateISO) => {
+        // 1. Update button attributes and UI display values instantly on select
+        dateTriggerBtn.setAttribute('data-raw-date', newSelectedDateISO);
+        
+        if (newSelectedDateISO) {
+          // Quick format using date-fns formatting strings
+          const parsed = parseISO(newSelectedDateISO);
+          dateTriggerBtn.innerHTML = `📅 ${format(parsed, 'MMM d, yyyy')}`;
+        } else {
+          dateTriggerBtn.innerHTML = `Set a target deadline...`;
+        }
+      });
+    });
+  }
+
+  if (clearFinishedBtn) {
+    clearFinishedBtn.addEventListener('click', () => {
+      // Keep only the unchecked todo item rows 🧹
+      task.todos = task.todos.filter(t => !t.completed);
+
+      // Commit changes safely to local disk memory structures
+      const mainIndex = allTasks.findIndex(t => t.id === task.id);
+      if (mainIndex !== -1) allTasks[mainIndex] = task;
+      localStorage.setItem('app_tasks', JSON.stringify(allTasks));
+
+      console.log("🧹 Completed sub-tasks purged from record cache bounds.");
+      renderPersonalDetails(task, allTasks, refreshParentDashboard); // Smooth inline screen refresh
+    });
+  }
 
   if (editMetaBtn) {
     editMetaBtn.addEventListener('click', () => {
@@ -204,8 +284,7 @@ function setupDetailPanelListeners(task, allTasks, refreshParentDashboard) {
       viewModeDiv.style.display = 'block';
     });
   }
-
-  // Handle Deletion Click Logic 🗑️
+  
   if (deletePersonalBtn) {
     deletePersonalBtn.addEventListener('click', () => {
       if (confirm(`Are you sure you want to permanently delete "${task.name}"?`)) {
@@ -215,7 +294,6 @@ function setupDetailPanelListeners(task, allTasks, refreshParentDashboard) {
         }
         localStorage.setItem('app_tasks', JSON.stringify(allTasks));
 
-        // Programmatically re-click the personal sidebar button to refresh layout cleanly
         const personalBtn = document.querySelector('#btn-personal');
         if (personalBtn) personalBtn.click();
       }
@@ -227,13 +305,57 @@ function setupDetailPanelListeners(task, allTasks, refreshParentDashboard) {
       e.preventDefault();
       task.name = document.getElementById('edit-p-name').value.trim();
       task.priority = document.getElementById('edit-p-priority').value;
-      task.date = document.getElementById('edit-p-date').value;
+      task.date = document.getElementById('edit-p-date-trigger').getAttribute('data-raw-date');
       task.note = document.getElementById('edit-p-note').value.trim();
 
       commitStateChanges(allTasks, refreshParentDashboard);
     });
   }
 
+  if (duplicateBtn) {
+    duplicateBtn.addEventListener('click', () => {
+      const duplicatedTask = {
+        ...task,
+        id: Date.now().toString(),
+        name: `${task.name} (Copy)`,
+        todos: task.todos ? task.todos.map(t => ({ ...t, completed: false })) : []
+      };
+
+      allTasks.push(duplicatedTask);
+      localStorage.setItem('app_theme', JSON.stringify(allTasks));
+      localStorage.setItem('app_tasks', JSON.stringify(allTasks));
+      
+      console.log(`👥 Task duplicated successfully: ${duplicatedTask.name}`);
+      refreshParentDashboard(); // Re-render lists layout cleanly
+    });
+  }
+
+  if (checklist) {
+    checklist.addEventListener('change', (e) => {
+      if (e.target.classList.contains('todo-complete-checkbox')) {
+        const targetIdx = parseInt(e.target.getAttribute('data-todo-index'), 10);
+        
+        // 🎯 SAFETY FALLBACK: If the task is an old string, convert it to an object instantly!
+        if (typeof task.todos[targetIdx] === 'string') {
+          task.todos[targetIdx] = { text: task.todos[targetIdx], completed: false };
+        }
+
+        // Now this mutation safe check will NEVER throw an error string notice
+        task.todos[targetIdx].completed = e.target.checked;
+        
+        // Save modified task details array directly back into localStorage cache bounds
+        const mainIndex = allTasks.findIndex(t => t.id === task.id);
+        if (mainIndex !== -1) allTasks[mainIndex] = task;
+        localStorage.setItem('app_tasks', JSON.stringify(allTasks));
+
+        // Re-trigger layout engine paints to slide progress fills smoothly
+        // Make sure this matches your local render function name (e.g., renderProjectDetails or renderPersonalDetails)
+        if (task.category === 'personal') renderPersonalDetails(task, allTasks, refreshParentDashboard);
+      }
+    });
+  }
+
+  // C. Handle Inline Form Additions
   if (inlineTodoForm) {
     inlineTodoForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -242,22 +364,84 @@ function setupDetailPanelListeners(task, allTasks, refreshParentDashboard) {
 
       if (todoValue) {
         if (!task.todos) task.todos = [];
-        task.todos.push(todoValue);
-        commitStateChanges(allTasks, refreshParentDashboard);
+        // Append structured todo mapping object properties
+        task.todos.push({ text: todoValue, completed: false });
+        
+        const mainIndex = allTasks.findIndex(t => t.id === task.id);
+        if (mainIndex !== -1) allTasks[mainIndex] = task;
+        localStorage.setItem('app_tasks', JSON.stringify(allTasks));
+        
+        renderPersonalDetails(task, allTasks, refreshParentDashboard);
       }
     });
   }
 
-  if (checklist) {
-    checklist.addEventListener('change', (e) => {
-      if (e.target.classList.contains('todo-complete-checkbox')) {
-        const targetIdx = parseInt(e.target.getAttribute('data-todo-index'), 10);
-        e.target.closest('li').style.opacity = '0.4';
-        setTimeout(() => {
-          task.todos.splice(targetIdx, 1);
-          commitStateChanges(allTasks, refreshParentDashboard);
-        }, 250);
-      }
+  if (draggableList && task.todos && task.todos.length > 0) {
+    let draggedItemIdx = null;
+
+    // 1. Capture the index of the row being dragged
+    draggableList.addEventListener('dragstart', (e) => {
+      const row = e.target.closest('.todo-draggable-row');
+      if (!row) return;
+      
+      draggedItemIdx = parseInt(row.getAttribute('data-index'), 10);
+      row.classList.add('is-dragging');
+      
+      // Set a clean phantom ghost drag visual effect standard
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    // 2. Track hover states and add a border line above/below adjacent rows
+    draggableList.addEventListener('dragover', (e) => {
+      e.preventDefault(); // Required to allow a drop event to trigger safely
+      const overRow = e.target.closest('.todo-draggable-row');
+      if (!overRow) return;
+
+      overRow.classList.add('drag-over-target');
+    });
+
+    // 3. Remove border highlights when the dragged item leaves an adjacent row
+    draggableList.addEventListener('dragleave', (e) => {
+      const overRow = e.target.closest('.todo-draggable-row');
+      if (overRow) overRow.classList.remove('drag-over-target');
+    });
+
+    // 4. Handle dropping the item and recalculating array indices 🎯
+    draggableList.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const targetRow = e.target.closest('.todo-draggable-row');
+      if (!targetRow) return;
+
+      targetRow.classList.remove('drag-over-target');
+      const targetItemIdx = parseInt(targetRow.getAttribute('data-index'), 10);
+
+      // If dropped on itself, exit early
+      if (draggedItemIdx === targetItemIdx) return;
+
+      // Mutate the internal array sequence layout safely 🎯
+      const reorderedTodos = [...task.todos];
+      const [removedTodo] = reorderedTodos.splice(draggedItemIdx, 1); // Extract dragged row
+      reorderedTodos.splice(targetItemIdx, 0, removedTodo);        // Insert at drop destination index
+
+      // Update references back into global localStorage cache bounds
+      task.todos = reorderedTodos;
+      const mainIndex = allTasks.findIndex(t => t.id === task.id);
+      if (mainIndex !== -1) allTasks[mainIndex] = task;
+      localStorage.setItem('app_tasks', JSON.stringify(allTasks));
+
+      // Force immediate view update to display the new task sequence instantly
+      renderPersonalDetails(task, allTasks, refreshParentDashboard);
+    });
+
+    // 5. Clean up shadow opacity classes when finger/mouse releases
+    draggableList.addEventListener('dragend', (e) => {
+      const row = e.target.closest('.todo-draggable-row');
+      if (row) row.classList.remove('is-dragging');
+      
+      // Safety sweep to clear out accidental styling leakages
+      draggableList.querySelectorAll('.todo-draggable-row').forEach(r => {
+        r.classList.remove('drag-over-target');
+      });
     });
   }
 }

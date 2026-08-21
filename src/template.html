@@ -6,6 +6,13 @@
   <title>Nudge | Todo-List of the Future</title>
 </head>
 <body>
+  <header class="mobile-navbar">
+    <button type="button" id="mobile-menu-toggle" class="mobile-menu-btn" aria-label="Open navigation menu">☰</button>
+    <h2 class="mobile-navbar-title">Workspace</h2>
+  </header>
+
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+  
   <div id="sidebar" class="sidebar">
     <div class="sidebar-brand">
       <svg xmlns="http://www.w3.org/2000/svg"
@@ -614,6 +621,35 @@
     <div id="per-sidebar" class="per-sidebar">
       <button id="btn-personal" class="per-side-btn">Personal</button>
         <ul id="personal" class="personal"></ul>
+    </div>
+    <div class="sidebar-footer">
+      <div class="theme-toggle-component">
+        <div class="theme-track">
+          <div class="theme-slider-thumb"></div>
+          
+          <button type="button" class="theme-option-btn" id="theme-light" title="Switch to Light Mode">
+            <span class="theme-btn-icon">☀️</span>
+            <span class="theme-btn-text">Light</span>
+          </button>
+          
+          <button type="button" class="theme-option-btn" id="theme-dark" title="Switch to Dark Mode">
+            <span class="theme-btn-icon">🌙</span>
+            <span class="theme-btn-text">Dark</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pomodoro Focus Timer Panel (Embedded inside the sidebar footer channel) ⏳ -->
+      <div class="sidebar-pomodoro-panel">
+        <div class="pomo-timer-display">
+          <span id="pomo-minutes">25</span>:<span id="pomo-seconds">00</span>
+        </div>
+        <div class="pomo-meta-status" id="pomo-status">⚡ Focus Session</div>
+        <div class="pomo-controls-row">
+          <button type="button" id="btn-pomo-start" class="pomo-control-action">▶ Start</button>
+          <button type="button" id="btn-pomo-reset" class="pomo-control-action reset">🔄 Reset</button>
+        </div>
+      </div>
     </div>
   </div>
   <div id="content"></div>

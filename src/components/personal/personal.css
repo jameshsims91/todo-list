@@ -279,3 +279,77 @@
 .delete-personal-btn:active {
   transform: scale(0.98);
 }
+
+/* Stack your multi-pane columns into single-column layout tracks on mobile views 📱 */
+@media (max-width: 768px) {
+  .projects-layout-grid,
+  .personal-layout-grid,
+  .anytime-layout-grid {
+    flex-direction: column;
+    height: auto; 
+    gap: 1.5rem;
+    overflow-y: visible;
+  }
+
+  /* Expand panels to stretch full horizontal width */
+  .projects-master-panel,
+  .personal-master-panel,
+  .anytime-master-panel {
+    width: 100% !important;
+    max-height: 280px; 
+  }
+
+  .project-detail-panel,
+  .personal-detail-panel,
+  .anytime-detail-panel {
+    padding: 1.5rem;
+    width: 100% !important;
+  }
+  
+  /* Make inline submission rows collapse tightly if width boundaries fail */
+  .inline-todo-form {
+    flex-wrap: wrap;
+  }
+  
+  .inline-todo-form button {
+    width: 100%;
+  }
+}
+
+/* ========================================== 🟢 PRIORITY CARD DOT EMBED STYLING ========================================== */
+
+/* Ensure the parent card wrapper block acts as an absolute boundary anchor */
+.project-list-card,
+.personal-list-card,
+.anytime-list-card {
+  position: relative;
+  padding-left: 1.85rem !important; /* Pushes text title rightward to clear spacing for dot */
+}
+
+/* Base Dot Element Shapes */
+.priority-dot-indicator {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: var(--theme-transition);
+}
+
+/* Palette assignments linked to your system semantic status vars */
+.priority-dot-indicator.status-high {
+  background-color: var(--urgent-magenta);
+  box-shadow: 0 0 8px var(--urgent-magenta);
+}
+
+.priority-dot-indicator.status-medium {
+  background-color: var(--warning-orange);
+  box-shadow: 0 0 8px var(--warning-orange);
+}
+
+.priority-dot-indicator.status-low {
+  background-color: var(--success-green);
+  box-shadow: 0 0 8px var(--success-green);
+}
