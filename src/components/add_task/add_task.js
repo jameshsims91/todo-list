@@ -1,5 +1,12 @@
-let savedTasks = [];
+import './add_task.css';
+import { format, parseISO } from 'date-fns';
+
+let savedTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
 let activeEditingId = null;
+
+function saveToLocatlStorage() {
+  localStorage.setItem('app_tasks', JSON.stringify(savedTasks));
+}
 
 export function initAddTask(existingTask = null) {
   const add_taskBtn = document.querySelector('#btn-add-task');
@@ -23,7 +30,7 @@ export function initAddTask(existingTask = null) {
     }
 
     const isEditing = !!activeEditingId;
-    const task = taskToEdit || { category: 'projects', name: '', priority: 'medium', note:'', todos: [] };
+    const task = taskToEdit || { category: 'projects', name: '', priority: 'medium', note:'', date:'', todos: [] };
 
     document.querySelectorAll('.side-btn, .pro-side-btn, .per-side-btn').forEach(btn => btn.classList.remove('active'));
     if (add_taskBtn) add_taskBtn.classList.add('active');
@@ -52,6 +59,9 @@ export function initAddTask(existingTask = null) {
         
         <label>Task Name:</label>
         <input type="text" id="task-name" value="${task.name}" required placeholder="Task title...">
+
+        <label>Due Date:</label>
+        <input type="date" id="task-date" value="${task.date || ''}">
         
         <label>Priority:</label>
         <select id="task-priority">
@@ -122,6 +132,7 @@ function setupFormLogic(contentArea) {
       id: activeEditingId || Date.now().toString(),
       category: contentArea.querySelector('#task-category').value,
       name: contentArea.querySelector('#task-name').value.trim(),
+      date: contentArea.querySelector('#task-date').value,
       priority: contentArea.querySelector('#task-priority').value,
       note: contentArea.querySelector('#task-note').value.trim(),
       todos: todosArray
@@ -134,14 +145,16 @@ function setupFormLogic(contentArea) {
       savedTasks.push(taskData);
     }
 
-    aciveEditingId = null;
+    saveToLocatlStorage();
+
+    activeEditingId = null;
     contentArea.innerHTML = `<div class="view-header"><h1>Task Saved!</h1></div>`;
 
     renderProjectsSidebar();
   });
 }
 
-function renderProjectsSidebar() {
+export function renderProjectsSidebar() {
   const projectsListUI = document.getElementById('projects');
   if (!projectsListUI) return;
 
@@ -149,24 +162,28 @@ function renderProjectsSidebar() {
 
   savedTasks.forEach(task => {
     const li = document.createElement('li');
-    li.className = `tast-item priority-${task.priority}`;
+    li.className = `task-item reopen-task-btn priority-${task.priority}`;
+    li.setAttribute('data-id', task.id);
 
-    const subTodosHTML = task.todos.map(todo => `<li>🔹 ${todo}</li>`).join('');
+    let displayDate = '';
+    if (task.date) {
+      displayDate = format(parseISO(task.date), 'MMM d, yyyy');
+    }
 
     li.innerHTML = `
-      <div class="task-summary">
-        <strong>${task.name}</strong> <span class="badge">${task.category}</span>
-        <p class="task-note-preview">${task.note}</p>
-        <ul class="task-sub-list">${subTodosHTML}</ul>
-        <button class="reopen-task-btn" data-id="${task.id}">⚙️ Manage/Add Todos</button>
+      <div class="sidebar-task-wrapper">
+        <strong>${task.name}</strong>
+        ${displayDate ? `<span class="task-date-badge">📅 ${displayDate}</span>` : ''}
       </div>
     `;
+    
     projectsListUI.appendChild(li);
   });
 }
 
 document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('reopen-task-btn')) {
+    const button = e.target.closest('reopen-task-btn');
+    if (button) {
     const taskId = e.target.getAttribute('data-id');
     const targetedTask = savedTasks.find(t => t.id === taskId);
     if (targetedTask) {
