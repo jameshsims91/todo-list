@@ -123,3 +123,81 @@
 }
 
 .empty-today-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
+
+.today-sub-todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.today-sub-todo-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+/* Strikes out the specific sub-todo line when checked */
+.today-sub-todo-list li.checked-item span {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+/* ========================================== 🎯 DETACHED SUB-TASK STREAM LAYOUT ========================================== */
+
+.today-detached-subtasks-wrapper {
+  margin-top: -0.5rem; /* Squeezes spacing close up below parent card container */
+  margin-bottom: 1rem;
+  padding-left: 1.5rem; /* Margins track over to visually indent beneath text title rows */
+}
+
+.today-detached-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.today-detached-item-row {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.85rem 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+  will-change: transform, opacity;
+}
+
+.today-detached-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.today-detached-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.todo-text-display {
+  font-size: 0.9rem;
+  font-weight: var(--weight-500);
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+/* Subtle feedback glow when hovering detached items */
+.today-detached-item-row:hover {
+  border-color: rgba(6, 182, 212, 0.2);
+  background-color: var(--bg-hover);
+}

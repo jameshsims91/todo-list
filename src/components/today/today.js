@@ -19,7 +19,8 @@ export function initToday() {
 
   const renderTodayView = () => {
     const savedTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
-
+    
+    // Filter tasks whose explicit due date matches today's calendar date
     const todayTasks = savedTasks.filter(task => {
       if (!task.date) return false;
       try {
@@ -29,6 +30,7 @@ export function initToday() {
       }
     });
 
+    // Toggle navigation highlight states
     document.querySelectorAll('.side-btn, .pro-side-btn, .per-side-btn').forEach(btn => btn.classList.remove('active'));
     if (todayBtn) todayBtn.classList.add('active');
 
@@ -45,27 +47,47 @@ export function initToday() {
         </div>
 
         <div id="today-cards-feed" class="today-cards-feed">
-          ${todayTasks.map(task => `
-            <div class="today-task-card priority-${task.priority}" data-task-id="${task.id}">
-              <div class="today-card-left">
-                <input type="checkbox" class="task-complete-checkbox" data-task-id="${task.id}">
-                <div class="today-card-details">
-                  <h4>${task.name}</h4>
-                  ${task.note ? `<p class="today-task-note">${task.note}</p>` : ''}
-                  <span class="category-tag-pill">${task.category}</span>
-                </div>
-              </div>
-              
-              ${task.todos && task.todos.length > 0 ? `
-                <div class="today-sub-checklist-box">
-                  <h5>Sub-tasks:</h5>
-                  <ul>
-                    ${task.todos.map(todo => `<li>🔹 ${todo}</li>`).join('')}
+          ${todayTasks.map(task => {
+            // Render the parent card, and then place the checklist entirely outside/beneath it 🎯
+            const subTasksHTML = task.todos && task.todos.length > 0 
+              ? `
+                <div class="today-detached-subtasks-wrapper">
+                  <ul class="today-detached-list">
+                    ${task.todos.map((todo, idx) => {
+                      const todoText = typeof todo === 'object' ? todo.text : todo;
+                      return `
+                        <li class="today-detached-item-row" data-parent-id="${task.id}" data-todo-index="${idx}">
+                          <label class="today-detached-label">
+                            <input type="checkbox" class="today-purge-subtodo-checkbox" 
+                              data-parent-id="${task.id}" 
+                              data-todo-index="${idx}">
+                            <span class="checkbox-custom-visual"></span>
+                            <span class="todo-text-display">${todoText}</span>
+                          </label>
+                        </li>
+                      `;
+                    }).join('')}
                   </ul>
                 </div>
-              ` : ''}
-            </div>
-          `).join('')}
+              ` : '';
+
+            return `
+              <!-- Main Parent Card Container Box -->
+              <div class="today-task-card priority-${task.priority}" data-task-id="${task.id}">
+                <div class="today-card-left">
+                  <input type="checkbox" class="task-complete-checkbox" data-task-id="${task.id}">
+                  <div class="today-card-details">
+                    <h4>${task.name}</h4>
+                    ${task.note ? `<p class="today-task-note">${task.note}</p>` : ''}
+                    <span class="category-tag-pill">${task.category}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detached Sub-tasks List Elements Injected Entirely Beneath Container 🎯 -->
+              ${subTasksHTML}
+            `;
+          }).join('')}
 
           ${todayTasks.length === 0 ? `
             <div class="today-empty-card">
@@ -85,7 +107,10 @@ export function initToday() {
     });
   }
 
+  // Handle checking off events via global event delegation
   contentArea.addEventListener('change', (e) => {
+    
+    // A. Handle checking off the primary main parent task (Moves it to completed)
     if (e.target.classList.contains('task-complete-checkbox')) {
       const targetId = e.target.getAttribute('data-task-id');
       const card = e.target.closest('.today-task-card');
@@ -101,17 +126,45 @@ export function initToday() {
         if (taskToMove) {
           taskToMove.category = 'completed';
           taskToMove.completedAt = new Date().toISOString(); 
-          
           localStorage.setItem('app_tasks', JSON.stringify(currentTasks));
         }
         
         renderTodayView();
+        
+        const syncEvent = new CustomEvent('syncSidebar');
+        document.dispatchEvent(syncEvent);
+      }, 250);
+    }
 
-        const refreshSidebar = document.querySelector('#btn-add-task');
-        if (refreshSidebar) {
-          const syncEvent = new CustomEvent('syncSidebar');
-          document.dispatchEvent(syncEvent);
+    // B. Handle checking off sub-todos (Permanently deletes them from everywhere) 🎯
+    if (e.target.classList.contains('today-purge-subtodo-checkbox')) {
+      const parentId = e.target.getAttribute('data-parent-id');
+      const todoIdx = parseInt(e.target.getAttribute('data-todo-index'), 10);
+      const rowItem = e.target.closest('.today-detached-item-row');
+
+      // Instant tactile visual slide-out animation exit
+      if (rowItem) {
+        rowItem.style.opacity = '0';
+        rowItem.style.transform = 'translateX(-20px)';
+        rowItem.style.transition = 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+      }
+
+      setTimeout(() => {
+        const currentTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
+        const parentTask = currentTasks.find(t => t.id === parentId);
+
+        if (parentTask && parentTask.todos) {
+          console.log(`🧹 Purging sub-task at index ${todoIdx} from parent: "${parentTask.name}"`);
+          
+          // Permanently slice the element out of the database array 🎯
+          parentTask.todos.splice(todoIdx, 1);
+          
+          // Save changes back to localStorage
+          localStorage.setItem('app_tasks', JSON.stringify(currentTasks));
         }
+
+        // Live repaint updates columns and progress lines everywhere instantly
+        renderTodayView();
       }, 250);
     }
   });
