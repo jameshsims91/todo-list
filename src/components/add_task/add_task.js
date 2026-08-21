@@ -109,14 +109,24 @@ function setupFormLogic(contentArea) {
 
   const cancelBtn = contentArea.querySelector('#cancel-task-btn');
 
-  addTodoFieldBtn.addEventListener('click', () => {
-    const div = document.createElement('div');
-    div.className = 'todo-input-group';
-    div.innerHTML = `
-      <input type="text" class="todo-item-input" placeholder="To-do item details" required>
-      <button type="button" class="remove-todo-btn">❌</button>
+  if (addTodoFieldBtn) {
+  addTodoFieldBtn.addEventListener('click', (e) => {
+    e.preventDefault(); 
+
+    const newRow = document.createElement('div');
+    newRow.className = 'todo-input-group';
+    
+    newRow.innerHTML = `
+      <input type="text" class="todo-item-input" value="" placeholder="To-do item details...">
+      <button type="button" class="remove-todo-btn" title="Remove field">✕</button>
     `;
-    todosContainer.appendChild(div);
+    
+    todosContainer.appendChild(newRow);
+    console.log("➕ Pristine empty sub-todo input row appended cleanly!");
+
+    // Automatically focus the newly created field on mobile for a premium UX tap flow
+    const inputs = newRow.querySelector('.todo-item-input');
+    if (inputs) inputs.focus();
   });
 
   todosContainer.addEventListener('click', (e) => {
