@@ -47,6 +47,7 @@ export function initAddTask(existingTask = null) {
     contentArea.innerHTML = `
       <div class="view-header">
         <h1>${isEditing ? '✏️ Edit Task' : 'Add New Task'}</h1>
+        <button type="button" id="cancel-task-btn" class="cancel-icon-btn" title="Cancel creation">✕</button>
       </div>
       
       <form id="dynamic-task-form" class="task-form">
@@ -81,7 +82,6 @@ export function initAddTask(existingTask = null) {
         
         <div class="form-actions">
           <button type="submit" id="save-task-btn">💾 Save Task</button>
-          <button type="button" id="cancel-task-btn" class="cancel-meta-btn">Cancel</button>
         </div>
       </form>
     `;

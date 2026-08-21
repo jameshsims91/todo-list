@@ -1,3 +1,8 @@
+import './anytime.css';
+import { format, parseISO } from 'date-fns';
+
+let activePersonalId = null;
+
 export function initAnytime() {
   const anytimeBtn = document.querySelector('#btn-anytime');
   
