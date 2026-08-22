@@ -151,13 +151,15 @@ export function initToday() {
 
       setTimeout(() => {
         const currentTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
-        const parentTask = currentTasks.find(t => t.id === parentId);
+        const taskIndex = currentTasks.find(t => t.id === parentId);
 
-        if (parentTask && parentTask.todos) {
+        if (taskIndex !== -1 && currentTasks[taskIndex].todos) {
+          const targetTask = currentTasks[taskIndex];
           console.log(`🧹 Purging sub-task at index ${todoIdx} from parent: "${parentTask.name}"`);
           
           // Permanently slice the element out of the database array 🎯
-          parentTask.todos.splice(todoIdx, 1);
+          targetTask.todos.splice(todoIdx, 1);
+          currentTasks[taskIndex] = targetTask;
           
           // Save changes back to localStorage
           localStorage.setItem('app_tasks', JSON.stringify(currentTasks));
