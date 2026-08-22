@@ -1,4 +1,3 @@
-import './personal.css';
 import { format, parseISO } from 'date-fns';
 import { sortTasksByDueDate } from '../../utils/task_sorter.js';
 import { generateCountdownBannerHTML, generatePriorityPillHTML, generateProgressBarHTML } from '../../utils/tasks_helpers.js';
