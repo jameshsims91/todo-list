@@ -53,10 +53,19 @@
 }
 
 /* Universal Form Controls (Inputs, Dropdowns, Textareas) */
-.task-form input[type="text"],
-.task-form input[type="date"],
-.task-form select,
-.task-form textarea {
+.task-form input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: var(--calendar-icon-filter);
+}
+
+.task-form input[type="date"]::-webkit-datetime-edit-text,
+.task-form input[type="date"]::-webkit-datetime-edit-month-field,
+.task-form input[type="date"]::-webkit-datetime-edit-day-field,
+.task-form input[type="date"]::-webkit-datetime-edit-year-field {
+  color: var(--text-primary);
+}
+
+
+.task-form :is(input[type="text"], input[type="date"], select, textarea) {
   width: 100%;
   padding: 0.75rem 1rem;
   font-family: inherit;
@@ -71,10 +80,7 @@
 }
 
 /* Focused UI Inputs Glow States */
-.task-form input[type="text"]:focus,
-.task-form input[type="date"]:focus,
-.task-form select:focus,
-.task-form textarea:focus {
+.task-form :is(input[type="text"], input[type="date"], select, textarea):focus {
   border-color: var(--electric-cyan);
   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
 }
