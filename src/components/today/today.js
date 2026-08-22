@@ -72,20 +72,25 @@ export function initToday() {
               ` : '';
 
             return `
-              <!-- Main Parent Card Container Box -->
-              <div class="today-task-card priority-${task.priority}" data-task-id="${task.id}">
-                <div class="today-card-left">
-                  <input type="checkbox" class="task-complete-checkbox" data-task-id="${task.id}">
-                  <div class="today-card-details">
-                    <h4>${task.name}</h4>
-                    ${task.note ? `<p class="today-task-note">${task.note}</p>` : ''}
-                    <span class="category-tag-pill">${task.category}</span>
+              <!-- 🎯 THE UNIFIED AGENDA BLOCK CONTAINER: Wraps both parent and sub-todos together -->
+              <div class="today-agenda-block-container priority-border-${task.priority}">
+                
+                <!-- Main Parent Task Container Box (Now borderless inside the block wrapper) -->
+                <div class="today-task-card" data-task-id="${task.id}">
+                  <div class="today-card-left">
+                    <input type="checkbox" class="task-complete-checkbox" data-task-id="${task.id}">
+                    <div class="today-card-details">
+                      <h4>${task.name}</h4>
+                      ${task.note ? `<p class="today-task-note">${task.note}</p>` : ''}
+                      <span class="category-tag-pill">${task.category}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Detached Sub-tasks List Elements Injected Entirely Beneath Container 🎯 -->
-              ${subTasksHTML}
+                <!-- Detached Checklist Elements Rendered Cleanly Beneath Inside the Same Frame -->
+                ${subTasksHTML}
+                
+              </div>
             `;
           }).join('')}
 

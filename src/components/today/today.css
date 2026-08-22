@@ -36,10 +36,27 @@
 .today-cards-feed {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-.today-task-card .task-complete-checkbox {
+.today-agenda-block-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 0.5rem; /* Wraps components into a cohesive shell */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.today-agenda-block-container.priority-border-high { border-color: rgba(217, 70, 239, 0.25); border-left: 4px solid var(--urgent-magenta); }
+.today-agenda-block-container.priority-border-medium { border-color: rgba(249, 115, 22, 0.25); border-left: 4px solid var(--warning-orange); }
+.today-agenda-block-container.priority-border-low { border-color: rgba(34, 197, 94, 0.25); border-left: 4px solid var(--success-green); }
+
+.today-agenda-block-container:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.02);
+}
+
+/* .today-task-card .task-complete-checkbox {
   appearance: none;
   -webkit-appearance: none;
   position: relative;
@@ -54,11 +71,48 @@
   justify-content: center;
   flex-shrink: 0;
   margin-top: 0.15rem; /* Micro alignment spacing balance next to headers */
-  will-change: transform, background-color, border-color, box-shadow;
+  /* will-change: transform, background-color, border-color, box-shadow;
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
               border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
               box-shadow 0.2s ease, 
-              transform 0.1s ease;
+              transform 0.1s ease; */
+/* }  */
+
+.today-task-card {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 1.25rem 1.25rem 0.75rem 1.25rem;
+}
+
+/* ========================================== 🎯 DETACHED CHECKLIST CONTAINER OVERRIDES ========================================== */
+
+.today-detached-subtasks-wrapper {
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
+  padding-left: 3.5rem; /* Indents checklist directly inline underneath text titles */
+  padding-right: 1.25rem;
+}
+
+/* Translucent row boxes nested cleanly inside parent frames */
+.today-detached-item-row {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.today-detached-item-row:hover {
+  border-color: var(--electric-cyan);
+  background-color: var(--bg-hover);
+}
+
+/* Mobile responsive padding compression tweaks 📱 */
+@media (max-width: 768px) {
+  .today-detached-subtasks-wrapper {
+    padding-left: 1.5rem;
+    padding-right: 0.5rem;
+  }
 }
 
 .today-task-card .task-complete-checkbox:hover {
