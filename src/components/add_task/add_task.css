@@ -113,8 +113,8 @@
 /* Inline Destructive "Delete Sub-Item" Actions Buttons */
 .remove-todo-btn {
   background: transparent;
-  background-color: var(--stark-white);
-  color: var(--obsidian-black);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.65rem 0.85rem;
