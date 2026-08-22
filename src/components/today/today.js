@@ -156,11 +156,11 @@ export function initToday() {
 
       setTimeout(() => {
         const currentTasks = JSON.parse(localStorage.getItem('app_tasks')) || [];
-        const taskIndex = currentTasks.find(t => t.id === parentId);
+        const taskIndex = currentTasks.findIndex(t => t.id === parentId);
 
         if (taskIndex !== -1 && currentTasks[taskIndex].todos) {
           const targetTask = currentTasks[taskIndex];
-          console.log(`🧹 Purging sub-task at index ${todoIdx} from parent: "${parentTask.name}"`);
+          console.log(`🧹 Purging sub-task at index ${todoIdx} from parent: "${targetTask.name}"`);
           
           // Permanently slice the element out of the database array 🎯
           targetTask.todos.splice(todoIdx, 1);
@@ -172,6 +172,9 @@ export function initToday() {
 
         // Live repaint updates columns and progress lines everywhere instantly
         renderTodayView();
+
+        const syncEvent = new CustomEvent('syncSidebar');
+        document.dispatchEvent(syncEvent);
       }, 250);
     }
   });
