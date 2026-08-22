@@ -131,8 +131,13 @@
 }
 
 .remove-todo-btn:hover {
-  background-color: rgba(217, 70, 239, 0.1); 
-  border-color: var(--urgent-magenta);
+  background-color: var(--btn-cancel-hover); 
+  border-color: var(--destructive-red);
+  color: var(--destructive-red);
+}
+
+.remove-todo-btn:active {
+  transform: scale(0.94);
 }
 
 /* Constructive Sub-Action "+ Add To-Do Item" Trigger Controls */
