@@ -1,5 +1,3 @@
-/* ========================================== ⏱️ EMBEDDED SIDEBAR POMODORO LAYOUT ========================================== */
-
 .sidebar-pomodoro-panel {
   background-color: var(--bg-tertiary);
   border: 1px solid var(--border-color);
@@ -7,7 +5,7 @@
   border-radius: 12px;
   text-align: center;
   margin-top: 1rem;
-  margin-bottom: -0.5rem; 
+  margin-bottom: 0;
   border-left: 3px solid var(--electric-cyan);
   transition: var(--theme-transition);
 }
@@ -21,7 +19,7 @@
   font-weight: var(--weight-700);
   color: var(--text-primary);
   letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums; 
+  font-variant-numeric: tabular-nums;
 }
 
 .pomo-meta-status {
@@ -48,11 +46,13 @@
   font-weight: var(--weight-700);
   font-size: 0.8rem;
   padding: 0.45rem 0.85rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.25rem;
+  flex: 1;
   transition: var(--theme-transition);
 }
 
@@ -64,4 +64,10 @@
 .pomo-control-action.reset:hover {
   border-color: var(--text-secondary);
   color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .pomo-control-action {
+    min-height: var(--tap-min);
+  }
 }

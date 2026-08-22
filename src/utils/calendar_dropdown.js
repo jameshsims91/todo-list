@@ -75,10 +75,24 @@ export function toggleCalendarDropdown(anchorBtn, currentSelectedDate, onDateSel
     setupDropdownListeners(dropdown, onDateSelect);
   };
 
-  // 5. Position the dropdown absolute directly beneath the clicked button anchor node
+  // Keep the picker inside the viewport (fixed, so #content scrolling cannot clip it)
   const rect = anchorBtn.getBoundingClientRect();
-  dropdown.style.top = `${rect.bottom + window.scrollY + 6}px`;
-  dropdown.style.left = `${rect.left + window.scrollX}px`;
+  const gutter = 8;
+  const dropdownWidth = Math.min(280, window.innerWidth - gutter * 2);
+  const estimatedHeight = 340;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const openUpward = spaceBelow < estimatedHeight && rect.top > estimatedHeight;
+
+  let left = rect.left;
+  const maxLeft = window.innerWidth - dropdownWidth - gutter;
+  left = Math.max(gutter, Math.min(left, maxLeft));
+
+  dropdown.style.position = "fixed";
+  dropdown.style.width = `${dropdownWidth}px`;
+  dropdown.style.left = `${left}px`;
+  dropdown.style.top = openUpward
+    ? `${Math.max(gutter, rect.top - estimatedHeight - 6)}px`
+    : `${rect.bottom + 6}px`;
 
   document.body.appendChild(dropdown);
   renderCalendarMarkup();

@@ -1,110 +1,150 @@
 /* ==========================================
-   GLOBAL DESIGN TOKENS & RESPONSIVE THEMES
+   DESIGN TOKENS
    ========================================== */
 
 :root {
-  /* Shared Structural Tokens (Constant across all themes) */
-  --inter-font: 'Inter', system-ui, -apple-system, sans-serif;
+  --inter-font: "Inter", system-ui, -apple-system, sans-serif;
   --weight-500: 500;
   --weight-700: 700;
   --letter-spacing: -0.02em;
-  --theme-transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  --theme-transition: background-color 0.25s ease, color 0.25s ease,
+    border-color 0.25s ease, box-shadow 0.25s ease;
   --shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.04);
+  --focus-ring: 0 0 0 3px rgba(6, 182, 212, 0.15);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --mobile-nav-height: 56px;
+  --tap-min: 44px;
 }
 
-/* ☀️ Theme Mode Definition: Light View Base Palette mapping */
 :root.light-mode {
-  /* Core Brand Colors */
+  color-scheme: light;
   --neon-lime: #a3e635;
   --electric-cyan: #06b6d4;
   --stark-white: #ffffff;
   --cool-grey: #a1a1aa;
-
-  /* Semantic Status Colors */
   --success-green: #22c55e;
   --warning-orange: #f97316;
   --urgent-magenta: #d946ef;
   --destructive-red: #ef4444;
   --btn-cancel-hover: rgba(239, 68, 68, 0.08);
   --calendar-icon-filter: none;
-
-  /* Functional Layout Mapping Overwrites */
   --bg-primary: var(--stark-white);
-  --bg-secondary: #f4f4f5; 
-  --bg-tertiary: #e4e4e7;  
+  --bg-secondary: #f4f4f5;
+  --bg-tertiary: #e4e4e7;
   --bg-hover: rgba(0, 0, 0, 0.04);
-  --text-primary: #09090b; 
-  --text-secondary: #52525b; 
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
   --border-color: rgba(0, 0, 0, 0.05);
 }
 
-/* 🌙 Theme Mode Definition: Cyberpunk Dark View Variant mapping */
 :root.dark-mode {
-  /* Core Brand Colors (Dark Adaptations) */
-  --neon-lime: #adff2f; 
+  color-scheme: dark;
+  --neon-lime: #adff2f;
   --electric-cyan: #06b6d4;
   --obsidian-black: #09090b;
   --cool-grey: #a1a1aa;
-
-  /* Semantic Status Colors */
   --success-green: #22c55e;
   --warning-orange: #f97316;
   --urgent-magenta: #d946ef;
   --destructive-red: #ff453a;
   --btn-cancel-hover: rgba(255, 69, 58, 0.12);
-
-  /* Functional Layout Mapping Overwrites */
   --bg-primary: var(--obsidian-black);
-  --bg-secondary: #18181b; /* dark-slate equivalent */
-  --bg-tertiary: #27272a;  /* muted-zinc equivalent */
+  --bg-secondary: #18181b;
+  --bg-tertiary: #27272a;
   --bg-hover: rgba(255, 255, 255, 0.05);
-  --text-primary: #ffffff;  /* stark-white equivalent */
+  --text-primary: #ffffff;
   --text-secondary: var(--cool-grey);
-  --border-color: #27272a;  /* muted-zinc equivalent */
+  --border-color: #27272a;
   --shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.4);
   --calendar-icon-filter: invert(1);
 }
 
 /* ==========================================
-   📦 RESET & APP LAYOUT BASE
+   RESET & APP SHELL
    ========================================== */
-* {
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  height: 100%;
+}
+
 body {
   display: flex;
-  height: 100vh;                  
-  overflow: hidden;               
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   font-family: var(--inter-font);
   font-weight: var(--weight-500);
   letter-spacing: var(--letter-spacing);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: var(--theme-transition);
+  overscroll-behavior: none;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  max-width: 100%;
+}
+
+#content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 2.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  transition: var(--theme-transition);
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-navbar,
+.sidebar-overlay {
+  display: none;
 }
 
 /* ==========================================
-   🧭 SIDEBAR NAVIGATION PANEL
+   SIDEBAR
    ========================================== */
+
 .sidebar {
   width: 260px;
-  flex-shrink: 0;                 
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   padding: 1.5rem 1rem;
   height: 100%;
-  overflow-y: auto;               
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: var(--bg-secondary);
   border-right: 1px solid var(--border-color);
   box-shadow: var(--shadow-sidebar);
   transition: var(--theme-transition);
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Brand/Logo Area Wrapper */
 .sidebar-brand {
   display: flex;
   flex-direction: column;
@@ -120,12 +160,13 @@ body {
 
 .brand-logo {
   flex-shrink: 0;
+  width: 106px;
+  height: 106px;
 }
 
-/* ==========================================
-   🕹️ INTERACTIVE BUTTONS & DYNAMIC LISTS
-   ========================================== */
-.side-btn, .pro-side-btn, .per-side-btn {
+.side-btn,
+.pro-side-btn,
+.per-side-btn {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -139,26 +180,23 @@ body {
   color: var(--text-secondary);
   text-align: left;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Standout High-Intent UI Callout: "Add Task" Button Styling */
 #btn-add-task {
   background-color: var(--electric-cyan);
   color: var(--stark-white);
   font-weight: var(--weight-700);
   margin-bottom: 0.75rem;
-  justify-content: center;       
+  justify-content: center;
 }
 
 #btn-add-task:hover {
   filter: brightness(1.1);
-  background-color: var(--electric-cyan); 
 }
 
-/* Hover & Active States for Base Navigation Options */
-.side-btn:hover, 
+.side-btn:hover,
 .side-btn.active,
 .pro-side-btn:hover,
 .per-side-btn:hover {
@@ -166,7 +204,6 @@ body {
   color: var(--text-primary);
 }
 
-/* Icon Structural Box Alignment */
 .side-icon {
   display: inline-flex;
   align-items: center;
@@ -174,18 +211,15 @@ body {
   font-size: 1.2rem;
 }
 
-/* ==========================================
-   📁 PROJECT & PERSONAL FOLDERS
-   ========================================== */
-.pro-sidebar, .per-sidebar {
+.pro-sidebar,
+.per-sidebar {
   margin-top: 1.25rem;
   border-top: 1px solid var(--border-color);
   padding-top: 1rem;
   transition: var(--theme-transition);
 }
 
-/* Layout headers settings override */
-.pro-sidebar .pro-side-btn, 
+.pro-sidebar .pro-side-btn,
 .per-sidebar .per-side-btn {
   font-weight: var(--weight-700);
   text-transform: uppercase;
@@ -194,8 +228,8 @@ body {
   color: var(--text-primary);
 }
 
-/* Dynamic UL components targets */
-.projects, .personal {
+.projects,
+.personal {
   list-style: none;
   padding-left: 0.5rem;
   margin-top: 0.25rem;
@@ -204,126 +238,370 @@ body {
   gap: 0.25rem;
 }
 
-/* Interactive list items outputted by script logic */
-.projects li, .personal li {
+.projects li,
+.personal li {
   font-size: 0.9rem;
   color: var(--text-secondary);
   padding: 0.6rem 0.8rem;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
+  overflow-wrap: anywhere;
   transition: var(--theme-transition);
 }
 
-.projects li:hover, .personal li:hover {
+.projects li:hover,
+.personal li:hover {
   background-color: var(--bg-hover);
-  color: var(--text-primary);        
+  color: var(--text-primary);
 }
 
-/* ========================================== 📱 MOBILE DEVICE MEDIA QUERIES BREAKPOINT ========================================== */
+/* ==========================================
+   SHARED VIEW CHROME
+   ========================================== */
 
-@media (max-width: 768px) {
-  /* 1. Stack the app layout vertically instead of locking fixed horizontal windows */
-  body {
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  /* 2. Persistent Top Mobile Navbar Displays */
-  .mobile-navbar {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    height: 60px;
-    background-color: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    padding: 0 1.25rem;
-    flex-shrink: 0;
-    transition: var(--theme-transition);
-    z-index: 99;
-  }
-
-  .mobile-menu-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .mobile-navbar-title {
-    font-size: 1.15rem;
-    font-weight: var(--weight-700);
-    color: var(--text-primary);
-    letter-spacing: var(--letter-spacing);
-  }
-
-  /* 3. Transform the Sidebar panel into a sliding drawer panel layout 🎯 */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 280px;
-    height: 100%;
-    z-index: 101;
-    transform: translateX(-100%); 
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease;
-    box-shadow: none;
-  }
-
-  /* Slider Drawer Drawer State expansion identifier class */
-  .sidebar.drawer-open {
-    transform: translateX(0); 
-    box-shadow: 6px 0 30px rgba(0, 0, 0, 0.15);
-  }
-
-  /* 4. Backdrop dimming overlay surface panel rules */
-  .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    z-index: 100;
-    opacity: 0;
-    pointer-events: none; 
-    transition: opacity 0.25s ease;
-  }
-
-  .sidebar-overlay.active {
-    opacity: 1;
-    pointer-events: auto; 
-  }
-
-  /* 5. Fluid Main Content Container adjustments */
-  #content {
-    padding: 1.5rem 1.25rem;
-    height: calc(100vh - 60px); 
-    width: 100%;
-  }
+.view-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
-/* Hide mobile header panel primitives by default on full size computer desktops 🖥️ */
-@media (min-width: 769px) {
-  .mobile-navbar, .sidebar-overlay {
-    display: none !important;
-  }
+.view-header h1 {
+  font-size: 1.75rem;
+  font-weight: var(--weight-700);
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing);
 }
 
-/* ========================================== 📈 PROGRESS BAR TRACK COMPONENT ========================================== */
+.panel-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.detail-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+}
+
+.detail-header-row h2 {
+  font-size: 1.5rem;
+  font-weight: var(--weight-700);
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.detail-header-actions-cluster {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.empty-state-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+
+/* ==========================================
+   SPLIT-PANE EXPLORER (Projects / Personal / Anytime)
+   ========================================== */
+
+.projects-layout-grid,
+.personal-layout-grid,
+.anytime-layout-grid {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  min-height: 0;
+  height: calc(100vh - 180px);
+  height: calc(100dvh - 180px);
+  margin-top: 1rem;
+}
+
+.projects-master-panel,
+.personal-master-panel,
+.anytime-master-panel {
+  width: 320px;
+  flex-shrink: 0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 0;
+  overflow: hidden;
+  transition: var(--theme-transition);
+}
+
+.projects-master-panel h3,
+.personal-master-panel h3,
+.anytime-master-panel h3 {
+  font-size: 0.85rem;
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+#projects-master-list,
+#personal-master-list,
+#anytime-master-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.project-list-card,
+.personal-list-card,
+.anytime-list-card {
+  position: relative;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 1.2rem 1.2rem 1.2rem 1.85rem;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  touch-action: pan-y;
+  transition: border-color 0.25s ease, background-color 0.25s ease,
+    transform 0.2s ease;
+}
+
+.project-list-card:hover,
+.personal-list-card:hover,
+.anytime-list-card:hover {
+  border-color: var(--electric-cyan);
+  transform: translateX(3px);
+}
+
+.project-list-card.selected,
+.personal-list-card.selected,
+.anytime-list-card.selected {
+  border-color: var(--electric-cyan);
+  background-color: var(--bg-tertiary);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.08);
+}
+
+.project-card-header,
+.personal-card-header,
+.anytime-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.project-card-header strong,
+.personal-card-header strong,
+.anytime-card-header strong {
+  font-size: 0.95rem;
+  font-weight: var(--weight-700);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.todo-count-badge {
+  font-size: 0.75rem;
+  font-weight: var(--weight-700);
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  border: 1px solid var(--border-color);
+}
+
+.project-detail-panel,
+.personal-detail-panel,
+.anytime-detail-panel {
+  flex: 1;
+  min-width: 0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transition: var(--theme-transition);
+}
+
+.project-meta-strip,
+.personal-meta-strip,
+.anytime-meta-strip {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.project-notes-box,
+.personal-notes-box,
+.anytime-notes-box {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+}
+
+.project-notes-box h4,
+.personal-notes-box h4,
+.anytime-notes-box h4 {
+  font-size: 0.8rem;
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.project-notes-box p,
+.personal-notes-box p,
+.anytime-notes-box p {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.project-detail-panel h3,
+.personal-detail-panel h3,
+.anytime-detail-panel h3 {
+  font-size: 1rem;
+  font-weight: var(--weight-700);
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.priority-dot-indicator {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: var(--theme-transition);
+}
+
+.priority-dot-indicator.status-high {
+  background-color: var(--urgent-magenta);
+  box-shadow: 0 0 8px var(--urgent-magenta);
+}
+
+.priority-dot-indicator.status-medium {
+  background-color: var(--warning-orange);
+  box-shadow: 0 0 8px var(--warning-orange);
+}
+
+.priority-dot-indicator.status-low {
+  background-color: var(--success-green);
+  box-shadow: 0 0 8px var(--success-green);
+}
+
+/* ==========================================
+   PILLS, BANNERS, PROGRESS
+   ========================================== */
+
+.priority-indicator-pill,
+.date-indicator-pill {
+  font-size: 0.75rem;
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 30px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+}
+
+.priority-indicator-pill.priority-high {
+  background-color: rgba(217, 70, 239, 0.12);
+  color: var(--urgent-magenta);
+  border-color: rgba(217, 70, 239, 0.2);
+}
+
+.priority-indicator-pill.priority-medium {
+  background-color: rgba(249, 115, 22, 0.12);
+  color: var(--warning-orange);
+  border-color: rgba(249, 115, 22, 0.2);
+}
+
+.priority-indicator-pill.priority-low {
+  background-color: rgba(34, 197, 94, 0.12);
+  color: var(--success-green);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.date-indicator-pill {
+  color: var(--text-secondary);
+}
+
+.countdown-banner {
+  font-size: 0.75rem;
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  border: 1px solid transparent;
+}
+
+.banner-today {
+  background-color: rgba(6, 182, 212, 0.12);
+  color: var(--electric-cyan);
+  border-color: rgba(6, 182, 212, 0.2);
+}
+
+.banner-tomorrow,
+.banner-future {
+  background-color: rgba(163, 230, 53, 0.12);
+  color: var(--text-primary);
+  border-color: rgba(163, 230, 53, 0.25);
+}
+
+:root.dark-mode .banner-tomorrow,
+:root.dark-mode .banner-future {
+  color: var(--neon-lime);
+}
+
+.banner-overdue {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: var(--destructive-red);
+  border-color: rgba(239, 68, 68, 0.2);
+}
 
 .task-progress-wrapper {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   padding: 1rem 1.25rem;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -333,6 +611,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   font-size: 0.8rem;
   font-weight: var(--weight-700);
 }
@@ -345,6 +624,7 @@ body {
 
 .progress-percentage-text {
   color: var(--electric-cyan);
+  white-space: nowrap;
 }
 
 .progress-track-bar {
@@ -355,7 +635,6 @@ body {
   overflow: hidden;
 }
 
-/* Hardware accelerated smooth loading transitions fill */
 .progress-fill-thumb {
   height: 100%;
   background: linear-gradient(90deg, var(--electric-cyan), var(--neon-lime));
@@ -364,23 +643,259 @@ body {
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Striking cross-out layout effect when checklist rows hold checked states */
+/* ==========================================
+   CHECKLISTS & SHARED FORMS
+   ========================================== */
+
+.detail-todo-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.checklist-item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--theme-transition);
+}
+
+.checklist-item-wrapper:hover {
+  background-color: var(--bg-hover);
+}
+
+.todo-complete-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--cool-grey);
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.todo-complete-checkbox:checked {
+  background-color: var(--success-green);
+  border-color: var(--success-green);
+}
+
+.todo-complete-checkbox:checked::after {
+  content: "✓";
+  color: var(--stark-white);
+  font-size: 12px;
+  font-weight: 900;
+  position: absolute;
+}
+
+.checklist-item-wrapper span {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
 .checked-item span {
   text-decoration: line-through;
   color: var(--text-secondary);
   opacity: 0.6;
 }
 
-/* ========================================== 
-👥 REUSABLE ACTIONS INTERACTIVE BUTTONS ========================================== */
-
-.detail-header-actions-cluster {
+.inline-todo-form {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
-.duplicate-task-btn {
+.inline-todo-form input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 0.85rem 1.2rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: var(--radius-lg);
+  outline: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inline-todo-form input[type="text"]:focus {
+  border-color: var(--electric-cyan);
+  box-shadow: var(--focus-ring);
+}
+
+.inline-todo-form button {
+  background-color: var(--electric-cyan);
+  color: var(--stark-white);
+  border: none;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-weight: var(--weight-700);
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.2s ease;
+}
+
+.inline-todo-form button:hover {
+  filter: brightness(1.1);
+}
+
+.property-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.property-edit-form label {
+  font-size: 0.8rem;
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: -0.5rem;
+}
+
+.property-edit-form input[type="text"],
+.property-edit-form input[type="date"],
+.property-edit-form select,
+.property-edit-form textarea {
+  width: 100%;
+  padding: 0.85rem 1.2rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: var(--radius-lg);
+  outline: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.property-edit-form input:focus,
+.property-edit-form select:focus,
+.property-edit-form textarea:focus {
+  border-color: var(--electric-cyan);
+  box-shadow: var(--focus-ring);
+}
+
+.property-edit-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.custom-cal-trigger-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.edit-mode-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.save-meta-btn {
+  background-color: var(--neon-lime);
+  color: #09090b;
+  font-weight: var(--weight-700);
+  border: none;
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-lg);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(163, 230, 53, 0.12);
+  transition: filter 0.2s ease, transform 0.1s ease;
+}
+
+.save-meta-btn:hover {
+  filter: brightness(1.05);
+}
+
+.save-meta-btn:active {
+  transform: scale(0.98);
+}
+
+.cancel-meta-btn {
+  background-color: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--destructive-red);
+  font-weight: var(--weight-500);
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-lg);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--theme-transition);
+}
+
+.cancel-meta-btn:hover {
+  background-color: var(--btn-cancel-hover);
+  border-color: var(--destructive-red);
+}
+
+.cancel-meta-btn:active {
+  transform: scale(0.98);
+}
+
+.delete-project-btn,
+.delete-personal-btn,
+.delete-anytime-btn {
+  background-color: transparent;
+  border: 1px solid rgba(217, 70, 239, 0.2);
+  color: var(--urgent-magenta);
+  font-family: inherit;
+  font-weight: var(--weight-700);
+  font-size: 0.95rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  margin-left: auto;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.delete-project-btn:hover,
+.delete-personal-btn:hover,
+.delete-anytime-btn:hover {
+  background-color: rgba(217, 70, 239, 0.08);
+  border-color: var(--urgent-magenta);
+}
+
+.delete-project-btn:active,
+.delete-personal-btn:active,
+.delete-anytime-btn:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================
+   SHARED ACTION BUTTONS
+   ========================================== */
+
+.duplicate-task-btn,
+.clear-finished-btn,
+.reopen-task-btn,
+.edit-task-btn {
   background-color: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
@@ -388,49 +903,70 @@ body {
   font-weight: var(--weight-500);
   font-size: 0.8rem;
   padding: 0.4rem 0.85rem;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   transition: var(--theme-transition);
 }
 
-.duplicate-task-btn:hover {
+.reopen-task-btn,
+.edit-task-btn {
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+.duplicate-task-btn:hover,
+.edit-task-btn:hover,
+.reopen-task-btn:hover {
   background-color: var(--bg-hover);
   border-color: var(--text-primary);
   color: var(--text-primary);
 }
 
-/* ========================================== ☰ DRAG & DROP TACTILE SEQUENCING ========================================== */
+.clear-finished-btn:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--warning-orange);
+  color: var(--text-primary);
+}
+
+.clear-finished-btn:active {
+  transform: scale(0.96);
+}
+
+/* ==========================================
+   DRAG & DROP
+   ========================================== */
 
 .todo-draggable-row {
   list-style: none;
-  cursor: grab; /* Shows a hand grip mouse indicator */
+  cursor: grab;
   transition: transform 0.15s ease;
 }
 
 .todo-draggable-row:active {
-  cursor: grabbing; /* Shows a tight fist grip indicator when moving */
+  cursor: grabbing;
 }
 
-/* Dim the transparency of the background placeholder item being dragged */
 .todo-draggable-row.is-dragging {
   opacity: 0.35;
   background-color: var(--bg-tertiary);
   border: 1px dashed var(--border-color);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
 }
 
-/* Dynamic glow divider line indicator to show exactly where the item will drop 🎯 */
 .todo-draggable-row.drag-over-target {
-  border-top: 2px solid var(--electric-cyan) !important;
+  border-top: 2px solid var(--electric-cyan);
   transform: translateY(2px);
 }
 
-/* Grip indicator typography layout formatting */
 .drag-grip-handle {
   font-size: 0.95rem;
   color: var(--text-secondary);
   opacity: 0.5;
-  user-select: none; /* Prevents text highlights while dragging elements */
+  user-select: none;
   padding-right: 0.25rem;
   transition: opacity 0.2s ease;
 }
@@ -440,48 +976,20 @@ body {
   color: var(--electric-cyan);
 }
 
-/* ========================================== 
-🧹 CLEAR CHECKED ACTIONS BUTTON ========================================== */
-
-.clear-finished-btn {
-  background-color: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-weight: var(--weight-500);
-  font-size: 0.8rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 8px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
-}
-
-/* Transitions from a muted grey utility action into an interactive highlight state 🎯 */
-.clear-finished-btn:hover {
-  background-color: var(--bg-hover);
-  border-color: var(--warning-orange); /* Uses your warning-orange token for maintenance sweeping */
-  color: var(--text-primary);
-}
-
-/* Micro haptic feedback scaling effect when clicked */
-.clear-finished-btn:active {
-  transform: scale(0.96);
-}
-
-/* ========================================== 📅 CUSTOM PREMIUM CALENDAR DROPDOWN ========================================== */
+/* ==========================================
+   CALENDAR DROPDOWN
+   ========================================== */
 
 .custom-calendar-dropdown {
-  position: absolute;
+  position: fixed;
   width: 280px;
+  max-width: calc(100vw - 1.5rem);
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 1.25rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  z-index: 2000; 
+  z-index: 2000;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
@@ -495,19 +1003,42 @@ body {
 }
 
 .cal-nav-btn {
-  background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 0.25rem 0.5rem; font-size: 0.85rem; transition: color 0.2s ease;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
 }
-.cal-nav-btn:hover { color: var(--text-primary); }
-.cal-month-title { font-size: 0.95rem; font-weight: var(--weight-700); color: var(--text-primary); }
 
-.calendar-dropdown-weekdays {
-  display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.75rem; font-weight: var(--weight-700); color: var(--text-secondary); opacity: 0.7;
+.cal-nav-btn:hover {
+  color: var(--text-primary);
 }
 
-/* 7 Column Layout Grid Tracks */
+.cal-month-title {
+  font-size: 0.95rem;
+  font-weight: var(--weight-700);
+  color: var(--text-primary);
+}
+
+.calendar-dropdown-weekdays,
 .calendar-dropdown-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-dropdown-weekdays {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: var(--weight-700);
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.calendar-dropdown-grid {
   gap: 4px;
 }
 
@@ -519,8 +1050,10 @@ body {
   font-weight: var(--weight-500);
   color: var(--text-primary);
   height: 32px;
-  width: 32px;
-  border-radius: 6px;
+  width: 100%;
+  max-width: 32px;
+  justify-self: center;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -528,53 +1061,298 @@ body {
   transition: var(--theme-transition);
 }
 
-.cal-grid-cell:hover { background-color: var(--bg-hover); color: var(--electric-cyan); }
-.cal-grid-cell.outside-month { color: var(--text-secondary); opacity: 0.35; }
+.cal-grid-cell:hover {
+  background-color: var(--bg-hover);
+  color: var(--electric-cyan);
+}
 
-/* Today Indicator micro-borders ☀️ */
+.cal-grid-cell.outside-month {
+  color: var(--text-secondary);
+  opacity: 0.35;
+}
+
 .cal-grid-cell.is-today {
   border: 1px dashed var(--electric-cyan);
   color: var(--electric-cyan);
 }
 
-/* High Contrast Day Selection States */
 .cal-grid-cell.selected {
-  background-color: var(--electric-cyan) !important;
-  color: var(--stark-white) !important;
+  background-color: var(--electric-cyan);
+  color: var(--stark-white);
   font-weight: var(--weight-700);
   box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
 }
 
-/* Custom form button launcher override */
 .custom-date-trigger-btn {
-  width: 100%; text-align: left; padding: 0.85rem 1.2rem; border: 1px solid var(--border-color); background-color: var(--bg-primary); color: var(--text-primary); border-radius: 10px; font-family: inherit; font-size: 0.95rem; cursor: pointer; transition: border-color 0.2s ease;
+  width: 100%;
+  text-align: left;
+  padding: 0.85rem 1.2rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: var(--radius-lg);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
 }
-.custom-date-trigger-btn:focus { border-color: var(--electric-cyan); }
+
+.custom-date-trigger-btn:focus {
+  border-color: var(--electric-cyan);
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
 
 .cal-clear-btn {
-  width: 100%; background: transparent; border: 1px dashed var(--border-color); color: var(--destructive-red); font-family: inherit; font-size: 0.8rem; font-weight: var(--weight-700); text-transform: uppercase; padding: 0.5rem 0; border-radius: 6px; cursor: pointer; transition: var(--theme-transition);
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--border-color);
+  color: var(--destructive-red);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: var(--weight-700);
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--theme-transition);
 }
-.cal-clear-btn:hover { background-color: var(--btn-cancel-hover); border-color: var(--destructive-red); }
+
+.cal-clear-btn:hover {
+  background-color: var(--btn-cancel-hover);
+  border-color: var(--destructive-red);
+}
 
 @keyframes dropdownFade {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* ========================================== 📱 HARDWARE ACCELERATED MOBILE SWIPE GESTURES ========================================== */
+/* ==========================================
+   MOBILE
+   ========================================== */
 
-.project-list-card,
-.personal-list-card,
-.anytime-list-card {
-  will-change: transform, background-color; 
-  touch-action: pan-y; 
-  position: relative;
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+  }
+
+  .mobile-navbar {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    width: 100%;
+    min-height: var(--mobile-nav-height);
+    height: calc(var(--mobile-nav-height) + env(safe-area-inset-top, 0px));
+    padding: env(safe-area-inset-top, 0px) 1rem 0;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    z-index: 99;
+    transition: var(--theme-transition);
+  }
+
+  .mobile-menu-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    flex-shrink: 0;
+  }
+
+  .mobile-navbar-title {
+    font-size: 1.1rem;
+    font-weight: var(--weight-700);
+    color: var(--text-primary);
+    letter-spacing: var(--letter-spacing);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 86vw);
+    height: 100dvh;
+    z-index: 101;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.25s ease;
+    box-shadow: none;
+    padding: max(1rem, env(safe-area-inset-top, 0px)) 0.85rem
+      max(1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .sidebar.drawer-open {
+    transform: translateX(0);
+    box-shadow: 6px 0 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .brand-logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .sidebar-brand {
+    padding: 0.35rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .side-btn,
+  .pro-side-btn,
+  .per-side-btn {
+    min-height: var(--tap-min);
+  }
+
+  #content {
+    width: 100%;
+    padding: 1rem 1rem max(1.25rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .view-header {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .view-header h1 {
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
+
+  .view-header:has(> .current-date-subtitle) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .projects-layout-grid,
+  .personal-layout-grid,
+  .anytime-layout-grid {
+    flex-direction: column;
+    height: auto;
+    gap: 1rem;
+    overflow: visible;
+  }
+
+  .projects-master-panel,
+  .personal-master-panel,
+  .anytime-master-panel {
+    width: 100%;
+    max-height: min(38vh, 280px);
+    padding: 1rem;
+  }
+
+  .project-detail-panel,
+  .personal-detail-panel,
+  .anytime-detail-panel {
+    width: 100%;
+    padding: 1.15rem;
+    min-height: 16rem;
+  }
+
+  .detail-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detail-header-row h2 {
+    font-size: 1.2rem;
+  }
+
+  .detail-header-actions-cluster {
+    width: 100%;
+  }
+
+  .detail-header-actions-cluster button {
+    min-height: var(--tap-min);
+  }
+
+  .inline-todo-form {
+    flex-direction: column;
+  }
+
+  .inline-todo-form input[type="text"],
+  .property-edit-form input[type="text"],
+  .property-edit-form input[type="date"],
+  .property-edit-form select,
+  .property-edit-form textarea,
+  .custom-date-trigger-btn {
+    font-size: 16px;
+  }
+
+  .inline-todo-form button,
+  .save-meta-btn,
+  .cancel-meta-btn,
+  .delete-project-btn,
+  .delete-personal-btn,
+  .delete-anytime-btn {
+    width: 100%;
+    margin-left: 0;
+    min-height: var(--tap-min);
+    justify-content: center;
+  }
+
+  .edit-mode-actions {
+    flex-direction: column;
+  }
+
+  .drag-grip-handle {
+    display: none;
+  }
+
+  .checklist-item-wrapper {
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    min-height: var(--tap-min);
+  }
+
+  .cal-grid-cell {
+    height: var(--tap-min);
+    max-width: none;
+  }
 }
 
-/* Add a visual indicator subtle background tracking cue behind cards if dragged left */
-.anytime-master-panel,
-.projects-master-panel,
-.personal-master-panel {
-  position: relative;
-  overflow-x: hidden; 
+@media (max-width: 480px) {
+  .view-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .todo-count-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.45rem;
+  }
 }

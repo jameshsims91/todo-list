@@ -1,5 +1,3 @@
-/* ========================================== ☀️ TODAY VIEW AGENDA MODULE ========================================== */
-
 .today-container-panel {
   display: flex;
   flex-direction: column;
@@ -19,6 +17,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border-color);
 }
@@ -31,6 +30,7 @@
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   border: 1px solid var(--border-color);
+  white-space: nowrap;
 }
 
 .today-cards-feed {
@@ -43,132 +43,35 @@
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  padding: 0.5rem; /* Wraps components into a cohesive shell */
+  padding: 0.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.today-agenda-block-container.priority-border-high { border-color: rgba(217, 70, 239, 0.25); border-left: 4px solid var(--urgent-magenta); }
-.today-agenda-block-container.priority-border-medium { border-color: rgba(249, 115, 22, 0.25); border-left: 4px solid var(--warning-orange); }
-.today-agenda-block-container.priority-border-low { border-color: rgba(34, 197, 94, 0.25); border-left: 4px solid var(--success-green); }
+.today-agenda-block-container.priority-border-high {
+  border-color: rgba(217, 70, 239, 0.25);
+  border-left: 4px solid var(--urgent-magenta);
+}
+
+.today-agenda-block-container.priority-border-medium {
+  border-color: rgba(249, 115, 22, 0.25);
+  border-left: 4px solid var(--warning-orange);
+}
+
+.today-agenda-block-container.priority-border-low {
+  border-color: rgba(34, 197, 94, 0.25);
+  border-left: 4px solid var(--success-green);
+}
 
 .today-agenda-block-container:hover {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.02);
 }
 
-/* .today-task-card .task-complete-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  position: relative;
-  width: 22px;
-  height: 22px;
-  background-color: var(--bg-primary);
-  border: 2px solid var(--border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 0.15rem; /* Micro alignment spacing balance next to headers */
-  /* will-change: transform, background-color, border-color, box-shadow;
-  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.2s ease, 
-              transform 0.1s ease; */
-/* }  */
-
 .today-task-card {
-  background-color: transparent !important;
-  border: none !important;
-  padding: 1.25rem 1.25rem 0.75rem 1.25rem;
+  background-color: transparent;
+  border: none;
+  padding: 1.25rem 1.25rem 0.75rem;
 }
-
-/* ========================================== 🎯 DETACHED CHECKLIST CONTAINER OVERRIDES ========================================== */
-
-.today-detached-subtasks-wrapper {
-  margin-top: 0.25rem;
-  margin-bottom: 0.75rem;
-  padding-left: 3.5rem; /* Indents checklist directly inline underneath text titles */
-  padding-right: 1.25rem;
-}
-
-/* Translucent row boxes nested cleanly inside parent frames */
-.today-detached-item-row {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  padding: 0.65rem 1rem;
-  border-radius: 8px;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.today-detached-item-row:hover {
-  border-color: var(--electric-cyan);
-  background-color: var(--bg-hover);
-}
-
-/* Mobile responsive padding compression tweaks 📱 */
-@media (max-width: 768px) {
-  .today-detached-subtasks-wrapper {
-    padding-left: 1.5rem;
-    padding-right: 0.5rem;
-  }
-}
-
-.today-task-card .task-complete-checkbox:hover {
-  border-color: var(--electric-cyan);
-  background-color: var(--bg-hover);
-  box-shadow: 0 0 8px rgba(6, 182, 212, 0.2);
-}
-
-.today-task-card .task-complete-checkbox:focus {
-  border-color: var(--electric-cyan);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
-}
-
-.today-task-card .task-complete-checkbox:checked {
-  background-color: var(--success-green);
-  border-color: var(--success-green);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); /* Dynamic green elevation shadow drop */
-  transform: scale(0.95);
-}
-
-.today-task-card .task-complete-checkbox::after {
-  content: '✓';
-  color: var(--stark-white);
-  font-size: 13px;
-  font-weight: 900;
-  position: absolute;
-  opacity: 0;
-  transform: scale(0.6);
-  transition: opacity 0.15s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.today-task-card .task-complete-checkbox:checked::after {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.today-task-card .task-complete-checkbox:active {
-  transform: scale(0.9);
-}
-
-/* ========================================== 🌙 THEME OPTIMIZATIONS ========================================== */
-
-/* Explicit contrast enhancement rules for high readability in Cyberpunk Dark Mode variant mapping */
-:root.dark-mode .today-task-card .task-complete-checkbox {
-  background-color: rgba(9, 9, 11, 0.6); /* Translucent Obsidian base tracking mesh */
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-:root.dark-mode .today-task-card .task-complete-checkbox:hover {
-  border-color: var(--electric-cyan);
-}
-
-.today-task-card.priority-high { border-left-color: var(--urgent-magenta); }
-.today-task-card.priority-medium { border-left-color: var(--warning-orange); }
-.today-task-card.priority-low { border-left-color: var(--success-green); }
 
 .today-card-left {
   display: flex;
@@ -181,6 +84,7 @@
   font-weight: var(--weight-700);
   color: var(--text-primary);
   letter-spacing: var(--letter-spacing);
+  overflow-wrap: anywhere;
 }
 
 .today-task-note {
@@ -188,6 +92,7 @@
   color: var(--text-secondary);
   margin-top: 0.2rem;
   line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .category-tag-pill {
@@ -199,77 +104,91 @@
   background-color: var(--bg-tertiary);
   color: var(--text-secondary);
   padding: 0.15rem 0.5rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   margin-top: 0.5rem;
 }
 
-.today-sub-checklist-box {
+.today-task-card .task-complete-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 22px;
+  height: 22px;
   background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  margin-left: 2.25rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.1s ease;
 }
 
-.today-sub-checklist-box h5 {
-  font-size: 0.8rem;
-  font-weight: var(--weight-700);
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 0.4rem;
+.today-task-card .task-complete-checkbox:hover {
+  border-color: var(--electric-cyan);
+  background-color: var(--bg-hover);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.2);
 }
 
-.today-sub-checklist-box ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  color: var(--text-primary);
+.today-task-card .task-complete-checkbox:focus {
+  border-color: var(--electric-cyan);
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
+
+.today-task-card .task-complete-checkbox:checked {
+  background-color: var(--success-green);
+  border-color: var(--success-green);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  transform: scale(0.95);
+}
+
+.today-task-card .task-complete-checkbox::after {
+  content: "✓";
+  color: var(--stark-white);
+  font-size: 13px;
+  font-weight: 900;
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.today-task-card .task-complete-checkbox:checked::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.today-task-card .task-complete-checkbox:active {
+  transform: scale(0.9);
+}
+
+:root.dark-mode .today-task-card .task-complete-checkbox {
+  background-color: rgba(9, 9, 11, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .today-empty-card {
   text-align: center;
   padding: 4rem 2rem;
   border: 1px dashed var(--border-color);
-  border-radius: 14px;
+  border-radius: var(--radius-xl);
 }
 
-.empty-today-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
-
-.today-sub-todo-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.empty-today-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 1rem;
 }
-
-.today-sub-todo-label {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-}
-
-/* Strikes out the specific sub-todo line when checked */
-.today-sub-todo-list li.checked-item span {
-  text-decoration: line-through;
-  color: var(--text-secondary);
-  opacity: 0.6;
-}
-
-/* ========================================== 🎯 DETACHED SUB-TASK STREAM LAYOUT ========================================== */
 
 .today-detached-subtasks-wrapper {
-  margin-top: -0.75rem; /* Pulls checklist tightly underneath the parent card */
-  margin-bottom: 1.5rem;
-  padding-left: 2.25rem; /* Visually aligns checkboxes under the parent title text */
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  padding: 0 1rem 0.5rem 3.5rem;
   animation: slideDownIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -283,17 +202,16 @@
 }
 
 .today-detached-item-row {
-  background-color: transparent; /* Card-free aesthetic */
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   padding: 0.75rem 1.25rem;
-  border-radius: 10px;
-  will-change: transform, opacity, border-color, background-color;
-  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+  border-radius: var(--radius-lg);
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
-/* Subtle feedback glow when hovering detached items */
 .today-detached-item-row:hover {
-  border-color: rgba(6, 182, 212, 0.3); /* Electric Cyan highlight glow */
+  border-color: rgba(6, 182, 212, 0.3);
   background-color: var(--bg-hover);
   transform: translateX(2px);
 }
@@ -307,9 +225,6 @@
   user-select: none;
 }
 
-/* ========================================== ☑️ CUSTOM INTERACTIVE NEON CHECKBOXES ========================================== */
-
-/* Hide native browser checkbox completely */
 .today-purge-subtodo-checkbox {
   appearance: none;
   -webkit-appearance: none;
@@ -319,7 +234,6 @@
   height: 0;
 }
 
-/* Premium Visual Indicator Checkbox Track Frame */
 .checkbox-custom-visual {
   width: 18px;
   height: 18px;
@@ -331,53 +245,75 @@
   justify-content: center;
   position: relative;
   flex-shrink: 0;
-  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.1s ease;
 }
 
-/* Hover state on the uncompleted checkbox indicator track frame */
 .today-detached-label:hover .checkbox-custom-visual {
   border-color: var(--electric-cyan);
 }
 
-/* Active checked status transition mapping using warning orange for sweeping purge */
 .today-purge-subtodo-checkbox:checked + .checkbox-custom-visual {
   background-color: var(--warning-orange);
   border-color: var(--warning-orange);
   transform: scale(0.95);
 }
 
-/* Custom crisp checkmark icon generation */
 .today-purge-subtodo-checkbox:checked + .checkbox-custom-visual::after {
-  content: '✓';
+  content: "✓";
   color: var(--stark-white);
   font-size: 11px;
   font-weight: 900;
   position: absolute;
 }
 
-/* Typography settings for content fields */
 .todo-text-display {
   font-size: 0.9rem;
   font-weight: var(--weight-500);
   color: var(--text-primary);
   line-height: 1.4;
-  transition: color 0.2s ease;
+  overflow-wrap: anywhere;
 }
 
-/* ========================================== 📱 MOBILE DEVICE VIEW RESPONSIVENESS ========================================== */
+@keyframes slideDownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @media (max-width: 768px) {
+  .today-container-panel {
+    max-width: none;
+  }
+
+  .today-task-card {
+    padding: 1rem 0.85rem 0.5rem;
+  }
+
+  .today-card-left {
+    gap: 0.85rem;
+  }
+
+  .today-task-card .task-complete-checkbox {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+  }
+
   .today-detached-subtasks-wrapper {
-    padding-left: 1.25rem; /* Reduces indentation to preserve canvas space on small phone displays */
+    padding: 0 0.75rem 0.5rem 0.85rem;
   }
 
   .today-detached-item-row {
-    padding: 0.85rem 1rem; /* Slightly larger vertical tap target zone on mobile devices */
+    padding: 0.85rem 1rem;
   }
-}
 
-/* Keyframe entrance animation */
-@keyframes slideDownIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  .today-empty-card {
+    padding: 2.5rem 1.25rem;
+  }
 }

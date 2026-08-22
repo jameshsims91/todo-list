@@ -1,47 +1,19 @@
-/* ==========================================
-   🖥️ MAIN WORKSPACE CONTENT CONTAINER
-   ========================================== */
-#content {
-  flex: 1;
-  padding: 2.5rem;
-  overflow-y: auto;               
-  background-color: var(--bg-primary);
-  transition: var(--theme-transition);
-}
+/* Add Task form + sidebar saved-task chips */
 
-.view-header {
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.view-header h1 {
-  font-size: 1.75rem;
-  font-weight: var(--weight-700);
-  color: var(--text-primary);
-  letter-spacing: var(--letter-spacing);
-}
-
-/* Master Form Container Framework */
 .task-form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   width: 100%;
   max-width: 100%;
-  flex: 1;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   padding: 2rem;
-  border-radius: 14px;
+  border-radius: var(--radius-xl);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
   transition: var(--theme-transition);
 }
 
-/* Label Typography Mapping */
 .task-form label {
   display: block;
   font-size: 0.85rem;
@@ -49,10 +21,9 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-secondary);
-  margin-bottom: -0.5rem; 
+  margin-bottom: -0.5rem;
 }
 
-/* Universal Form Controls (Inputs, Dropdowns, Textareas) */
 .task-form input[type="date"]::-webkit-calendar-picker-indicator {
   filter: var(--calendar-icon-filter);
 }
@@ -64,7 +35,6 @@
   color: var(--text-primary);
 }
 
-
 .task-form :is(input[type="text"], input[type="date"], select, textarea) {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -73,32 +43,27 @@
   color: var(--text-primary);
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   outline: none;
-  box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Focused UI Inputs Glow States */
 .task-form :is(input[type="text"], input[type="date"], select, textarea):focus {
   border-color: var(--electric-cyan);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+  box-shadow: var(--focus-ring);
 }
 
-/* Scalable Textarea Specific Configurations */
 .task-form textarea {
   min-height: 90px;
   resize: vertical;
 }
 
-/* ========================================== 🔹 NESTED TO-DOS SCHEDULER LAYOUT ========================================== */
 #todos-container {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-/* Dynamic Line Rows Entry */
 .todo-input-group {
   display: flex;
   align-items: center;
@@ -108,30 +73,32 @@
 
 .todo-input-group input {
   flex: 1;
+  min-width: 0;
 }
 
-/* Inline Destructive "Delete Sub-Item" Actions Buttons */
 .remove-todo-btn {
-  background: transparent;
   background-color: var(--bg-primary);
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 0.65rem 0.85rem;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   transition: var(--theme-transition);
 }
 
 .remove-todo-btn:focus {
   border-color: var(--electric-cyan);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+  box-shadow: var(--focus-ring);
 }
 
 .remove-todo-btn:hover {
-  background-color: var(--btn-cancel-hover); 
+  background-color: var(--btn-cancel-hover);
   border-color: var(--destructive-red);
   color: var(--destructive-red);
 }
@@ -140,7 +107,6 @@
   transform: scale(0.94);
 }
 
-/* Constructive Sub-Action "+ Add To-Do Item" Trigger Controls */
 #add-todo-field-btn {
   background-color: var(--bg-tertiary);
   border: none;
@@ -149,7 +115,7 @@
   font-weight: var(--weight-700);
   font-size: 0.85rem;
   padding: 0.6rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   align-self: flex-start;
   transition: var(--theme-transition);
@@ -159,7 +125,6 @@
   filter: brightness(0.95);
 }
 
-/* Save Form Submissions Engine Panel */
 .form-actions {
   margin-top: 0.75rem;
   padding-top: 1.25rem;
@@ -174,12 +139,14 @@
   font-weight: var(--weight-500);
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+    transform 0.1s ease;
 }
 
 .cancel-icon-btn:hover {
@@ -195,13 +162,13 @@
 #save-task-btn {
   width: 100%;
   background-color: var(--neon-lime);
-  color: #09090b; 
+  color: #09090b;
   border: none;
   font-family: inherit;
   font-weight: var(--weight-700);
   font-size: 1rem;
   padding: 0.85rem 1.5rem;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -220,36 +187,40 @@
   transform: translateY(1px);
 }
 
-/* ========================================== 📋 SIDEBAR SAVED TASKS PRESENTATION ========================================== */
-
-/* Main List Cards injected under #projects-list or .projects ul */
 .task-item {
   position: relative;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   margin-bottom: 0.75rem;
   list-style-type: none;
   transition: var(--theme-transition);
 }
 
-/* Semantic Priority Vertical Indicators */
 .task-item::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   width: 4px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  background-color: var(--cool-grey); 
+  border-top-left-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-lg);
+  background-color: var(--cool-grey);
 }
 
-.task-item.priority-high::before { background-color: var(--urgent-magenta); }
-.task-item.priority-medium::before { background-color: var(--warning-orange); }
-.task-item.priority-low::before { background-color: var(--success-green); }
+.task-item.priority-high::before {
+  background-color: var(--urgent-magenta);
+}
+
+.task-item.priority-medium::before {
+  background-color: var(--warning-orange);
+}
+
+.task-item.priority-low::before {
+  background-color: var(--success-green);
+}
 
 .task-summary strong {
   display: inline-block;
@@ -259,7 +230,6 @@
   margin-bottom: 0.25rem;
 }
 
-/* Target Labels */
 .badge {
   display: inline-block;
   font-size: 0.7rem;
@@ -269,7 +239,7 @@
   background-color: var(--bg-tertiary);
   color: var(--text-secondary);
   padding: 0.15rem 0.5rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   margin-left: 0.5rem;
   vertical-align: middle;
 }
@@ -281,7 +251,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Sub-Todos Unordered Render Bullets */
 .task-sub-list {
   list-style: none;
   padding: 0;
@@ -292,36 +261,14 @@
 }
 
 .task-sub-list li {
-  font-size: 0.85rem !important;
-  color: var(--text-secondary) !important;
-  padding: 0.15rem 0.25rem !important;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.15rem 0.25rem;
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  background: transparent !important; 
-  cursor: default !important;
-}
-
-/* Custom Interactive Edit/Manage Action Hook Triggers */
-.reopen-task-btn, .edit-task-btn {
-  background-color: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  font-family: inherit;
-  font-weight: var(--weight-500);
-  font-size: 0.75rem;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: var(--theme-transition);
-}
-
-.reopen-task-btn:hover, .edit-task-btn:hover {
-  background-color: var(--bg-hover);
-  border-color: var(--text-secondary);
+  background: transparent;
+  cursor: default;
 }
 
 .sidebar-task-wrapper {
@@ -330,7 +277,6 @@
   gap: 0.2rem;
 }
 
-/* date-fns Display Output Badge */
 .task-date-badge {
   font-size: 0.75rem;
   font-weight: var(--weight-500);
@@ -338,7 +284,28 @@
   opacity: 0.8;
 }
 
-/* Adjust hover logic to keep the date badge highly readable */
 .projects li:hover .task-date-badge {
-  color: var(--stark-white);
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .task-form {
+    padding: 1.15rem;
+  }
+
+  .task-form :is(input[type="text"], input[type="date"], select, textarea) {
+    font-size: 16px;
+  }
+
+  .cancel-icon-btn {
+    width: var(--tap-min);
+    height: var(--tap-min);
+  }
+
+  #add-todo-field-btn,
+  #save-task-btn {
+    min-height: var(--tap-min);
+    width: 100%;
+    justify-content: center;
+  }
 }
